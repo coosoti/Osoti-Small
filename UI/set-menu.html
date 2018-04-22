@@ -1,94 +1,41 @@
 <!DOCTYPE html>
 <html>
-<style>
-/* The container */
-.container {
-    display: block;
-    position: relative;
-    padding-left: 35px;
-    margin-bottom: 12px;
-    cursor: pointer;
-    font-size: 22px;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-}
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="description" content="Book-A-Meal" />
+        <link rel="stylesheet" type="text/css" href="assets/css/set-menu.css">
+        <title>Set Today's Menu</title>
+    </head>
+    <body>
+        <div class="text-center">
+            <h1>Set Today's Menu</h1>
+            <p>
+                Choose menu options from the list beloe to add tof today's menu.   
+            </p>
+        </div>
+        <div class="main">   
+            <form>
+                <label class="container"><p>Beef with rice</p> 
+                    <input type="checkbox" checked="checked">
+                    <span class="checkmark"></span>
+                </label>
+                <label class="container"><p>Beef with chapati</p>
+                    <input type="checkbox">
+                    <span class="checkmark"></span>
+                </label>
+                <label class="container"><p>Beef with Ugali</p>
+                    <input type="checkbox">
+                    <span class="checkmark"></span>
+                </label>
+                <label class="container"><p>Beef with Whatever</p>
+                    <input type="checkbox">
+                    <span class="checkmark"></span>
+                </label>
 
-/* Hide the browser's default checkbox */
-.container input {
-    position: absolute;
-    opacity: 0;
-    cursor: pointer;
-}
-
-/* Create a custom checkbox */
-.checkmark {
-    position: absolute;
-    top: 0;
-    left: 0;
-    height: 25px;
-    width: 25px;
-    background-color: #eee;
-}
-
-/* On mouse-over, add a grey background color */
-.container:hover input ~ .checkmark {
-    background-color: #ccc;
-}
-
-/* When the checkbox is checked, add a blue background */
-.container input:checked ~ .checkmark {
-    background-color: #2196F3;
-}
-
-/* Create the checkmark/indicator (hidden when not checked) */
-.checkmark:after {
-    content: "";
-    position: absolute;
-    display: none;
-}
-
-/* Show the checkmark when checked */
-.container input:checked ~ .checkmark:after {
-    display: block;
-}
-
-/* Style the checkmark/indicator */
-.container .checkmark:after {
-    left: 9px;
-    top: 5px;
-    width: 5px;
-    height: 10px;
-    border: solid white;
-    border-width: 0 3px 3px 0;
-    -webkit-transform: rotate(45deg);
-    -ms-transform: rotate(45deg);
-    transform: rotate(45deg);
-}
-</style>
-<body>
-
-<h1>Set Today's Menu</h1>
-<form>
-<label class="container">One
-  <input type="checkbox" checked="checked">
-  <span class="checkmark"></span>
-</label>
-<label class="container">Two
-  <input type="checkbox">
-  <span class="checkmark"></span>
-</label>
-<label class="container">Three
-  <input type="checkbox">
-  <span class="checkmark"></span>
-</label>
-<label class="container">Four
-  <input type="checkbox">
-  <span class="checkmark"></span>
-</label>
-<button type="submit">Submit</button>
-</form>
-
-</body>
+                <button id="btn" type="submit">Add</button>
+            </form>
+        </div>
+        <footer class="text-center">&copy; Osoti Small</footer>
+    </body>
 </html>

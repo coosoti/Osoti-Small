@@ -1,31 +1,36 @@
+<!DOCTYPE html>
 <html>
-  <head>
-    <link rel="stylesheet" type="text/css" href="assets/css/login.css">
-    <title>Book-A-Meal</title>
-  </head>
-  <body>
-    <form action="">
-      <div class="container">
-        <h3  class="text-center">Sign In to Book-A-Meal</h3>
-        <p  class="text-center">Please fill in this form to sign in.</p>
-        <hr>
-        <label for="uname"><b>Username</b></label>
-        <input type="text" placeholder="Enter Username" name="uname" required>
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta name="description" content="Book-A-Meal" />
+		<link rel="stylesheet" type="text/css" href="assets/css/login.css">
+		<title>Book-A-Meal</title>
+	</head>
+	<body>
+		<form>
+			<div class="container">
+				<h3  class="text-center">Sign In to Book-A-Meal</h3>
+				<p  class="text-center">Please fill in this form to sign in.</p>
+				<hr>
+				<label for="username"><b>Username</b></label>
+				<input type="text" placeholder="Enter Username" name="username" required>
 
-        <label for="psw"><b>Password</b></label>
-        <input type="password" placeholder="Enter Password" name="psw" required>
+				<label for="password"><b>Password</b></label>
+				<input type="password" placeholder="Enter Password" name="password" required>
 
-        <button type="submit">Login</button>
-        <label>
-          <input type="checkbox" checked="checked" name="remember"> Remember me
-        </label>
-      </div>
+				<button type="submit">Login</button>
 
-      <div class="container" style="background-color:#f1f1f1">
-        <button type="button" class="cancelbtn">Cancel</button>
-        <span class="psw">Forgot <a href="#">password?</a></span>
-      </div>
-    </form>
-    <footer class="text-center">&copy; Osoti Small</footer>
-  </body>
+				<label>
+				  	<input type="checkbox" checked="checked" name="remember">Remember me
+				</label>
+			</div>
+
+		  <div class="container" style="background-color:#f1f1f1">
+			<button type="button" class="cancelbtn">Cancel</button>
+			<span class="passwd">Forgot <a href="#">password?</a></span>
+		  </div>
+		</form>
+		<footer class="text-center">&copy; Osoti Small</footer>
+	</body>
 </html>

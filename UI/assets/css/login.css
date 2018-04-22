@@ -1,3 +1,9 @@
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background-image: url("assets/images/food2.jpg");
+    background-color: #cccccc;
+}
+
 div.main {
     display:block;
     margin: auto;
@@ -43,11 +49,6 @@ button:hover {
     background-color: #f44336;
 }
 
-/* Center the avatar image inside this container */
-.imgcontainer {
-    text-align: center;
-    margin: 24px 0 12px 0;
-}
 
 
 /* Add padding to containers */
@@ -59,14 +60,14 @@ button:hover {
 }
 
 /* The "Forgot password" text */
-span.psw {
+span.passwd {
     float: right;
     padding-top: 16px;
 }
 
 /* Change styles for span and cancel button on extra small screens */
 @media screen and (max-width: 300px) {
-    span.psw {
+    span.passwd {
         display: block;
         float: none;
     }

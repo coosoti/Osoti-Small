@@ -1,40 +1,48 @@
 <!DOCTYPE html>
+
 <html>
     <head>
-        <meta charset="UTF-8">
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="description" content="Book-A-Meal" />
+        <link rel="stylesheet" type="text/css" href="assets/css/dashboard.css">
         <title>Today's Menu</title>
-        <style>
+        <style type="text/css">
             input[type='submit'], button, [aria-label]{
-            cursor: pointer;
-            }
+                cursor: pointer;
+                }
             #spoiler{
-            display: none;
+                display: none;
             }
         </style>
     </head>
-<body>
-    <form action="javascript:void(0);" method="POST" onsubmit="app.Add()"> 
-        <input type="text" id="add-name" placeholder="New Menu Option">
-        <input type="submit" value="Add">
-    </form>
+    <body>
+        <div class="main">
+            <form action="javascript:void(0);" method="POST" onsubmit="app.Add()" class="text-center"> 
+                <input class="search-box" type="text" id="add-name" placeholder="New Menu Option" required>
+                <input id="btn" type="submit" value="Add">
+            </form>
 
-    <div id="spoiler" role="aria-hidden">
-        <form action="javascript:void(0);" method="POST" id="saveEdit">
-            <input type="text" id="edit-name" required>
-            <input type="submit" value="Edit" /> <a onclick="CloseInput()" aria-label="Close">&#10006;</a>
-        </form>
-    </div>
+            <div id="spoiler" role="aria-hidden">
+                <form action="javascript:void(0);" method="POST" id="saveEdit">
+                    <input class="search-box" type="text" id="edit-name" required>
+                    <input id="btn" type="submit" value="Edit" /> <a onclick="CloseInput()" aria-label="Close">&#10006;</a>
+                </form>
+            </div>
 
-<p id="counter"></p>
+            <p id="counter"></p>
 
-<table>
-    <tr>
-        <th>Menu Option</th>
-    </tr>
-    <tbody id="menuItems">
-    </tbody>
-</table>
-
-<script type="text/javascript" src="assets/js/admin-dashboard.js"></script>
-</body>
+            <table>
+                <tr>
+                    <th>Menu Option</th>
+                    <th>Edit Action</th>
+                    <th>Delete Action</th>
+                </tr>
+                <tbody id="menuItems">
+                </tbody>
+            </table>
+        </div>
+        <footer class="text-center">&copy; Osoti Small</footer>
+        <script type="text/javascript" src="assets/js/admin-dashboard.js"></script>
+    </body>
 </html>

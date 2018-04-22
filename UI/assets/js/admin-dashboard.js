@@ -24,8 +24,8 @@ var app = new function() {
             for (i = 0; i < this.menuItems.length; i++) {
                 data += '<tr>';
                 data += '<td>' + this.menuItems[i] + '</td>';
-                data += '<td><button onclick="app.Edit(' + i + ')">Edit</button></td>';
-                data += '<td><button onclick="app.Delete(' + i + ')">Delete</button></td>';
+                data += '<td><button style="background-color: orange;" onclick="app.Edit(' + i + ')">Edit</button></td>';
+                data += '<td><button style="background-color: red;" onclick="app.Delete(' + i + ')">Delete</button></td>';
                 data += '</tr>';
             }
         }
