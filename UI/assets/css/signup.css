@@ -1,5 +1,11 @@
 * {box-sizing: border-box}
 
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  background-image: url("assets/images/food2.jpg");
+    background-color: #cccccc;
+}
+
 /* Full-width input fields */
   input[type=text], input[type=password] {
   width: 100%;
@@ -36,6 +42,25 @@ button:hover {
   opacity:1;
 }
 
+#btn {
+  border: 1px solid #d3d3d3;
+  background: #f3f3f3;
+  color:#696969;
+  margin-left:4px;
+  margin-right:4px;
+  margin-top: 15px;
+  font-family: arial, sans-serif;
+  font-size: 11px;
+  font-weight: bold;
+  padding: 7px;
+  border-radius:2px;
+}
+
+#btn:hover {
+  color: #2a2a2a;
+  border: 1px solid #bdbdbd;
+}
+
 /* Extra styles for the cancel button */
 .cancelbtn {
   padding: 14px 20px;
@@ -45,7 +70,7 @@ button:hover {
 /* Float cancel and signup buttons and add an equal width */
 .cancelbtn, .signupbtn {
   float: left;
-  width: 50%;
+  max-width: 100px;
 }
 
 /* Add padding to container elements */
