@@ -34,7 +34,7 @@ Follow the link for a [demo](https://coosoti.github.io/Osoti-Small/).
 
 ### Screencasts
 
-![Landing Page](/screencasts/demo.webm)
+![Landing Page](/screencasts/demo.gif)
 
 ### Author
 
