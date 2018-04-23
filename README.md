@@ -24,13 +24,17 @@ Follow the link for a [demo](https://coosoti.github.io/Osoti-Small/).
 
 ### Screenshots
 
+![Landing Page](/screenshots/landing.png)
 ![Sign Up Page](/screenshots/signup.png)
 ![Sign In Page](/screenshots/login.png)
 ![Admin Dashboard](/screenshots/dashboard.png)
-![Make Order Page](/screenshots/order.png)
-![Landing Page](/screenshots/landing.png)
+![Edit Menu Page](/screenshots/editmenu.png)
 ![Set Menu Page](/screenshots/set-menu.png)
-![Edit Menu Page](/screenshots/edit-menu.png)
+![Make Order Page](/screenshots/order.png)
+
+### Screencasts
+
+![Landing Page](/screencasts/demo.webm)
 
 ### Author
 
