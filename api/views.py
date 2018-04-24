@@ -3,7 +3,8 @@ from flask import Blueprint, request, jsonify
 from .models.database import Database
 from .models.meal import Meal
 from .docs.docs import ( 
-    CREATE_MEAL_DOCS, 
+    CREATE_MEAL_DOCS,
+    DELETE_MEAL_DOCS, 
     GET_MEALS_DOCS, GET_MEAL_DOCS, 
     UPDATE_MEAL_DOCS
 )
@@ -75,7 +76,7 @@ def get_meals():
 @v1.route('/meals/<meal_id>', methods=['GET'])
 @swag_from(GET_MEAL_DOCS)
 def get_meal(meal_id):
-    """Retrieves a post
+    """Retrieves meal
     """
     if meal_id in [meal['id'] for meal in Database.meals]:
         meal = Meal.get_meal(meal_id)
@@ -96,7 +97,7 @@ def get_meal(meal_id):
 @v1.route('/meals/<meal_id>', methods=['PUT'])
 @swag_from(UPDATE_MEAL_DOCS)
 def update_meal(meal_id):
-    """Update a meal option
+    """Update a meal
     """
     input_data = request.get_json(force=True)
     meal = Meal.get_meal(meal_id)
@@ -133,3 +134,24 @@ def update_meal(meal_id):
     )
     response.status_code = 400
     return response    
+
+@v1.route('/meals/<meal_id>', methods=['DELETE'])
+@swag_from(DELETE_MEAL_DOCS)
+def delete_meal(meal_id):
+    """Delete meal
+    """
+    meal = Meal.get_meal(meal_id)
+    if meal:
+        Meal.delete(meal_id)
+        response = jsonify({
+            'status': 'ok',
+            'message': "Meal has been successfully deleted"
+        })
+        response.status_code = 202
+        return response
+    response = jsonify(
+        status='error',
+        message="This meal does not exist or you do not have the permission to delete it" 
+    )
+    response.status_code = 400
+    return response
