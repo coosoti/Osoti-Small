@@ -14,7 +14,7 @@ class MealTests(MainTests):
         """
         response = self.app.post('/api/v1/meals', data=json.dumps({
             'title': 'Beef with chapati',
-            'price': 600
+            'price': '600.00'
             }))
         self.assertEqual(response.status_code, 201)
         self.assertIn(b'Meal Successfully Created', response.data)
@@ -55,7 +55,7 @@ class MealTests(MainTests):
         """
         new_data = {
             'title': 'Chicken with Ugali',
-            'price': 1000
+            'price': '1000.00'
         }
         Meal.save(self.meal_data)
         response = self.app.put('/api/v1/meals/' + self.meal_data['id'],

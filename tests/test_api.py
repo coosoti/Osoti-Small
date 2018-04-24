@@ -23,6 +23,13 @@ class MainTests(unittest.TestCase):
             'title': 'Beef with rice',
             'price': 600
         }
+        self.user_data = {
+            'id': uuid.uuid4().hex,
+            'username': 'CharlesOsoti',
+            'email': 'osoticharles.com',
+            'password': 'kulundeng',
+            'confirm_password': 'kulundeng'
+        }
 
 
 
