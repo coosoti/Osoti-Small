@@ -1,0 +1,45 @@
+""" This class validates user input and will be used in the input_utils module
+"""  
+
+import re
+
+
+class Validation:
+    """Has methods to validate user's input
+    """
+
+    def __init__(self, user_inputs):
+        """ This avails input dictionary to the class """
+        self.all = user_inputs
+
+    def string(self, key, string):
+        """Check if the input given is a string"""
+        if key in self.all and self.all[key] is not None:
+            if not re.match(r"[^[a-zA-Z0-9]+$", self.all[key]):
+                return True
+            return key + " should be a string"
+        return True
+
+    def minimum(self, key, minimum):
+        """Check the required character size"""
+        if key in self.all and self.all[key] is not None:
+            if len(self.all[key]) < int(minimum):
+                return key + " should not be less than "+ str(minimum) + " characters"
+            return True
+        return True     
+
+    def maximum(self, key, maximum):
+        """Check the required character size"""
+        if key in self.all and self.all[key] is not None:
+            if len(self.all[key]) > int(maximum):
+                return key + " should not be greater than "+ str(maximum) + " characaters"
+            return True
+        return True     
+                
+    def required(self, key, is_required=True):
+        """Check input it is required"""
+        if key in self.all:
+            if self.all[key] is None:
+                return key + " should not be empty"
+            return True
+        return key + " is required"
