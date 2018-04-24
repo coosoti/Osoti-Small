@@ -2,19 +2,59 @@ import uuid
 from flask import Blueprint, request, jsonify
 from .models.database import Database
 from .models.meal import Meal
+from .models.user import User
 from .docs.docs import ( 
     CREATE_MEAL_DOCS,
     DELETE_MEAL_DOCS, 
     GET_MEALS_DOCS, GET_MEAL_DOCS, 
-    UPDATE_MEAL_DOCS
+    UPDATE_MEAL_DOCS,
+    SIGNUP_DOCS
 )
 
-from .input_utils import validate, CREATE_MEAL_RULES
+from .input_utils import validate, CREATE_MEAL_RULES, USER_SIGNUP_RULES
 
 from flasgger.utils import swag_from
 
 v1 = Blueprint('v1', __name__, url_prefix='/api/v1')
 
+@v1.route('/auth/register', methods=['POST'])
+@swag_from(SIGNUP_DOCS)
+def register():
+    """This functions enables user registration
+    """
+    is_valid = validate(request.get_json(force=True), USER_SIGNUP_RULES)
+    input_data = request.get_json(force=True)
+    if is_valid != True:
+        response = jsonify(
+            status='error', 
+            message="Please provide valid email and password", 
+            errors=is_valid
+        )
+        response.status_code = 400
+        return response
+    data = {
+        'id': uuid.uuid4().int,
+        'username': input_data['username'],
+        'email': input_data['email'],
+        'designation': input_data['designation'],
+        'password': input_data['password']
+    }
+
+    if User.user_already_exists(data['email']):
+        response = jsonify({
+            'status': 'error',
+            'message': 'Sorry. The email you provided has been taken.'
+        })
+        response.status_code = 400
+        return response
+
+    User.save(data)
+    response = jsonify({
+        'status': 'ok',
+        'message':  "You have been successfully registered"
+    })
+    response.status_code = 201
+    return response     
 
 
 @v1.route('/meals', methods=['POST'])

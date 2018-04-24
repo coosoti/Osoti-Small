@@ -15,6 +15,11 @@ class Database(object):
         """
         pass
 
+    @classmethod
+    def register_user(cls, data):
+        """Method for saving user"""
+        cls.users.append(data)
+            
     # Methods for meals
     @classmethod
     def save_meal(cls, data):

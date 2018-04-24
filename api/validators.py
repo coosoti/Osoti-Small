@@ -9,8 +9,27 @@ class Validation:
     """
 
     def __init__(self, user_inputs):
-        """ This avails input dictionary to the class """
+        """ This avails input dictionary to the class
+        """
         self.all = user_inputs
+
+    def email(self, key, email):
+        """Check required input is email type
+        """
+        if key in self.all:
+            if not re.match(r"[^@\s]+@[^@\s]+\.[a-zA-Z]+$", self.all[key]):
+                return "Invalid email address"
+            return True
+        return True
+
+    def confirm(self, key, confirm):
+        """Check if given password matches with the other one
+        """
+        if key in self.all and confirm in self.all:
+            if self.all[confirm] != self.all[key]:
+                return confirm + " don't match"
+            return True
+        return True        
 
     def string(self, key, string):
         """Check if the input given is a string"""
