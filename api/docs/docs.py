@@ -240,3 +240,69 @@ DELETE_MEAL_DOCS = {
         }
     }
 }
+
+SIGNUP_DOCS = {
+    "tags": [
+        "User"
+    ],
+    "description": "User registration",
+    "parameters": [
+        {
+            "name": "body",
+            "in": "body",
+            "description": "User details",
+            "required": True,
+            "schema": {
+                "id": "User",
+                "required": [
+                    "username",
+                    "email",
+                    "designation"
+                    "password",
+                    "confirm_password",
+                ],
+                "properties": {
+                    "username": {
+                        "type": "string",
+                        "minimum": 6,
+                        "example": "osoticharles",
+                    },
+                    "email": {
+                        "type": "email",
+                        "example": "osoticharles@gmail.com"
+                    },
+                    "designation": {
+                        "type": "string",
+                        "example": "Customer"
+                    },
+                    "password": {
+                        "type": "string",
+                        "example": "kulundeng",
+                    },
+                    "confirm_password": {
+                        "type": "string",
+                        "example": "kulundeng",
+                    },
+                }
+            }
+        }
+    ],
+    "responses": {
+        "201": {
+            "description": "Return response status and message",
+            "schema": {
+                "id": "registration_response",
+                "properties": {
+                    "status": {
+                        "type": "string",
+                        "example": "ok"
+                    },
+                    "message": {
+                        "type": "string",
+                        "example": "You have been successfully registered"
+                    },
+                }
+            }
+        }
+    }
+}
