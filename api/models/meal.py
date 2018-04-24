@@ -37,7 +37,8 @@ class Meal(object):
     def get_meals(cls):
         """Gets Meal Details
         """
-        pass
+        meals = [meal for meal in Database.meals]
+        return meals
             
     @classmethod
     def get_meal(cls, meal_id):

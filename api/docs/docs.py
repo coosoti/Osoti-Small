@@ -2,7 +2,7 @@
 """
 CREATE_MEAL_DOCS = {
     "tags": [
-        "Meal"
+        "Book-A-Meal"
     ],
     "description": "Meal Creation",
     "parameters": [
@@ -46,6 +46,50 @@ CREATE_MEAL_DOCS = {
                     },
                 }
             }
+        }
+    }
+}
+
+GET_MEALS_DOCS = {
+    "tags": [
+        "Book-A-Meal"
+    ],
+    "description": "Get a list of meals created by authenticated caterer",
+    "responses": {
+        "200": {
+            "description": "Return response status and message and a list of posts by the user",
+            "schema": {
+                "id": "get_meals_response",
+                "properties": {
+                    "status": {
+                        "type": "string",
+                        "example": "ok"
+                    },
+                    "message": {
+                        "type": "string",
+                        "example": "You have 1 meal"
+                    },
+                    "meals": {
+                        "type": "array",
+                        "items": {
+                            "properties": {
+                                "id": {
+                                    "type": "string",
+                                    "example": "a69de3743ae24ac89dc3dc2e54c91b3b"
+                                },
+                                "title": {
+                                    "type": "string",
+                                    "example": "PBeef with chicken"
+                                },
+                                "price": {
+                                    "type": "float",
+                                    "example": "600.00"
+                                },
+                            }
+                        }
+                    },
+                }
+            },
         }
     }
 }

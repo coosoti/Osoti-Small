@@ -19,11 +19,16 @@ class MealTests(MainTests):
         self.assertEqual(response.status_code, 201)
         self.assertIn(b'Meal has been successfully created', response.data)
 
+    def test_get_all_meals(self):
+        """Testing retrieval of all meals
+        """
+        response = self.app.get('/api/v1/meals')
+        self.assertEqual(response.status_code, 200)
+   
+
     def test_duplicate_attempts(self):
         """Testing attempt to create a duplicate meal
         """
-
-        data = self.meal_data
         Meal().save(self.meal_data)
         response = self.app.post('/api/v1/meals', 
             data=self.meal_data,
