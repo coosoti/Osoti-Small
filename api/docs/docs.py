@@ -148,6 +148,7 @@ GET_MEAL_DOCS = {
             },
         }
     }
+<<<<<<< HEAD
 }
 
 UPDATE_MEAL_DOCS = {
@@ -239,4 +240,6 @@ DELETE_MEAL_DOCS = {
             }
         }
     }
+=======
+>>>>>>> 157011695-chore/project-set-up
 }

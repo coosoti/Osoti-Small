@@ -20,7 +20,11 @@ class Database(object):
     def save_meal(cls, data):
         """This method will append meal option to the meal's list
         """
+<<<<<<< HEAD
         cls.meals.append(data)        
+=======
+        pass        
+>>>>>>> 157011695-chore/project-set-up
 
     @classmethod
     def delete_meal(cls, meal_id):
@@ -33,12 +37,17 @@ class Database(object):
     def update_meal(cls, meal_id, data):
         """This method will edit a meal option
         """
+<<<<<<< HEAD
         for key in range(0, len(cls.meals)):
             if cls.meals[key]['id'] == meal_id:
                 # this appends existing meal id to the data
                 data['id'] = meal_id
                 cls.meals[key] = data
                 break          
+=======
+        pass
+            
+>>>>>>> 157011695-chore/project-set-up
 
     # Methods for menu
     @classmethod
