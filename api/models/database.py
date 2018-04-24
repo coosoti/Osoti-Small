@@ -9,6 +9,7 @@ class Database(object):
     menu = []
     orders = []
     users = []
+    jwt_tokens = []
 
     def __init__(self):
         """Initializes the class Database
@@ -16,10 +17,15 @@ class Database(object):
         pass
 
     @classmethod
+    def save_token(cls, token):
+        """Method to save generated token"""
+        cls.jwt_tokens.append(token)
+
+    @classmethod
     def register_user(cls, data):
         """Method for saving user"""
         cls.users.append(data)
-            
+
     # Methods for meals
     @classmethod
     def save_meal(cls, data):

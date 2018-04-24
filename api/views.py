@@ -1,5 +1,6 @@
 import uuid
 from flask import Blueprint, request, jsonify
+from werkzeug.security import check_password_hash
 from .models.database import Database
 from .models.meal import Meal
 from .models.user import User
@@ -11,6 +12,8 @@ from .docs.docs import (
     SIGNUP_DOCS,
     SIGNIN_DOCS
 )
+
+from .auth_helper import get_token, token_id
 
 from .input_utils import validate, CREATE_MEAL_RULES, USER_SIGNUP_RULES, USER_SIGNIN_RULES
 
@@ -57,6 +60,52 @@ def register():
     response.status_code = 201
     return response     
 
+@v1.route('/auth/login', methods=['POST'])
+@swag_from(SIGNIN_DOCS)
+def login():
+    """This functions allows registered users to login"""
+    input_data = request.get_json(force=True)
+    is_valid = validate(input_data, USER_SIGNIN_RULES)
+
+    if is_valid != True:
+        response = jsonify(
+            status='error', 
+            message="Please provide corrent email or password", 
+            errors=is_valid
+        )
+        response.status_code = 400
+        return response
+
+    data = {
+        'email': input_data['email'],
+        'password': input_data['password'],
+    }
+
+    user_ = User.get_user(data['email'])
+
+    if user_:
+        if check_password_hash(user_['password'], data['password']):
+            token = get_token(user_['id'])
+            User.add_token(token)
+            response = jsonify({
+                'status': 'ok',
+                'message': 'You have successfully logged in',
+                'access_token': token,
+            })
+            response.status_code = 200
+            return response
+        response = jsonify({
+            'status': 'error',
+            'message': 'Invalid password'
+        })  
+        response.status_code = 401
+        return response
+    response = jsonify({
+        'status': 'error',
+        'message': 'Invalid email or password'
+    })
+    response.status_code = 401
+    return response 
 
 @v1.route('/meals', methods=['POST'])
 @swag_from(CREATE_MEAL_DOCS)

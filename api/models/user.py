@@ -27,8 +27,15 @@ class User(Database):
     def get_user(cls, email):
         """This method checks if the user exists and return the user detail
         """
-        pass
+        for user in Database.users:
+            if user['email'] == email:
+                return user
+        return False
     
+    @classmethod
+    def add_token(cls, token):
+        """This method save auth token to the main store"""
+        Database.save_token(token)
     
     @classmethod
     def check_password(cls, user_id, raw_password):
