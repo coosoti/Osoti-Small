@@ -206,3 +206,37 @@ UPDATE_MEAL_DOCS = {
         }
     }
 }
+
+DELETE_MEAL_DOCS = {
+    "tags": [
+        "Book-A-Meal"
+    ],
+    "description": "Meal can only be deleted by authenticated caterer",
+    "parameters": [
+        {
+            "name": "meal_id",
+            "in": "path",
+            "description": "meal id",
+            "type": "string",
+            "required": True,
+        },
+    ],
+    "responses": {
+        "202": {
+            "description": "Return response status and response message",
+            "schema": {
+                "id": "delete_meal_response",
+                "properties": {
+                    "status": {
+                        "type": "string",
+                        "example": "ok"
+                    },
+                    "message": {
+                        "type": "string",
+                        "example": "Meal option has been successfully deleted"
+                    },
+                }
+            }
+        }
+    }
+}
