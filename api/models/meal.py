@@ -30,8 +30,7 @@ class Meal(object):
     def update(cls, meal_id, data):
         """Edits meal option
         """
-
-        pass
+        Database.update_meal(meal_id, data)
 
     @classmethod
     def get_meals(cls):
