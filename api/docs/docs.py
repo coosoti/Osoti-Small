@@ -360,3 +360,40 @@ SIGNIN_DOCS = {
         }
     }
 }
+
+LOGOUT_DOCS = {
+    "tags": [
+        "User"
+    ],
+    "description": "User logout",
+    "parameters": [
+        {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Authorization token",
+            "schema": {
+                "type": "string",
+                "format": "uuid",
+            },
+            "required": True,
+        }
+    ],
+    "responses": {
+        "200": {
+            "description": "Return response status and message",
+            "schema": {
+                "id": "logout_response",
+                "properties": {
+                    "status": {
+                        "type": "string",
+                        "example": "ok"
+                    },
+                    "message": {
+                        "type": "string",
+                        "example": "You have successfully logged out"
+                    },
+                }
+            }
+        }
+    }
+}
