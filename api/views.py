@@ -8,10 +8,11 @@ from .docs.docs import (
     DELETE_MEAL_DOCS, 
     GET_MEALS_DOCS, GET_MEAL_DOCS, 
     UPDATE_MEAL_DOCS,
-    SIGNUP_DOCS
+    SIGNUP_DOCS,
+    SIGNIN_DOCS
 )
 
-from .input_utils import validate, CREATE_MEAL_RULES, USER_SIGNUP_RULES
+from .input_utils import validate, CREATE_MEAL_RULES, USER_SIGNUP_RULES, USER_SIGNIN_RULES
 
 from flasgger.utils import swag_from
 

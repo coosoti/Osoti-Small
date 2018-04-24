@@ -306,3 +306,57 @@ SIGNUP_DOCS = {
         }
     }
 }
+
+SIGNIN_DOCS = {
+    "tags": [
+        "User"
+    ],
+    "description": "User login by providing valid credentials",
+    "parameters": [
+        {
+            "name": "body",
+            "in": "body",
+            "description": "User credentials",
+            "required": True,
+            "schema": {
+                "id": "login",
+                "required": [
+                    "email",
+                    "password"
+                ],
+                "properties": {
+                    "email": {
+                        "type": "email",
+                        "example": "osoticharles@gmail.com"
+                    },
+                    "password": {
+                        "type": "string",
+                        "example": "kulundeng"
+                    },
+                }
+            }
+        }
+    ],
+    "responses": {
+        "200": {
+            "description": "Return response status and message",
+            "schema": {
+                "id": "login_response",
+                "properties": {
+                    "status": {
+                        "type": "string",
+                        "example": "ok"
+                    },
+                    "message": {
+                        "type": "string",
+                        "example": "You have been successfully logged in"
+                    },
+                    "access_token": {
+                        "type": "string",
+                        "example": "token....."
+                    },
+                }
+            }
+        }
+    }
+}

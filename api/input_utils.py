@@ -19,6 +19,11 @@ USER_SIGNUP_RULES = [
 ]
 
 
+USER_SIGNIN_RULES = [
+    {'email': [('minimum', 12), ('required', True)]},
+    {'password': [('minimum', 8), ('required', True)]},
+]
+
 def validate(inputs, input_rules):
     """ Method to implement validation rules on user input. """
     errors_dict = {}
