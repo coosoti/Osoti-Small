@@ -10,7 +10,8 @@ from .docs.docs import (
     GET_MEALS_DOCS, GET_MEAL_DOCS, 
     UPDATE_MEAL_DOCS,
     SIGNUP_DOCS,
-    SIGNIN_DOCS
+    SIGNIN_DOCS,
+    SIGNOUT_DOCS
 )
 
 from .auth_helper import get_token, token_id
@@ -106,6 +107,18 @@ def login():
     })
     response.status_code = 401
     return response 
+
+@v1.route('/auth/logout', methods=['POST'])
+@swag_from(SIGNOUT_DOCS)
+def logout():
+    """Logs the user out by removing the token"""
+    Database.remove_token(request.headers.get('Authorization'))
+    response = jsonify({
+        'status': 'ok',
+        'message': "You have successfully logged out"
+    })
+    response.status_code = 200
+    return response
 
 @v1.route('/meals', methods=['POST'])
 @swag_from(CREATE_MEAL_DOCS)

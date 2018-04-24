@@ -361,7 +361,7 @@ SIGNIN_DOCS = {
     }
 }
 
-LOGOUT_DOCS = {
+SIGNOUT_DOCS = {
     "tags": [
         "User"
     ],

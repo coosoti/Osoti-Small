@@ -22,6 +22,11 @@ class Database(object):
         cls.jwt_tokens.append(token)
 
     @classmethod
+    def remove_token(cls, token):
+        """Method for removing auth token"""
+        cls.jwt_tokens.remove(token)
+
+    @classmethod
     def register_user(cls, data):
         """Method for saving user"""
         cls.users.append(data)
