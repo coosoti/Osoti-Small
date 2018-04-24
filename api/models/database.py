@@ -13,7 +13,6 @@ class Database(object):
     def __init__(self):
         """Initializes the class Database
         """
-
         pass
 
     # Methods for meals
@@ -21,8 +20,7 @@ class Database(object):
     def save_meal(cls, data):
         """This method will append meal option to the meal's list
         """
-
-        pass
+        cls.meals.append(data)        
 
     @classmethod
     def delete_meal(cls, meal_id):

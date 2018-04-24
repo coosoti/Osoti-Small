@@ -21,7 +21,7 @@ class MainTests(unittest.TestCase):
         self.meal_data = {
             'id': uuid.uuid4().hex,
             'title': 'Beef with rice',
-            'price': 600
+            'price': '600.00'
         }
 
 

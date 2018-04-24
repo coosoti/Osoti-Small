@@ -20,7 +20,7 @@ class Validation:
             return key + " should be a string"
         return True
 
-     def float(self, key, float):
+    def float(self, key, float):
         """Check if the input given is a float"""
         if key in self.all and self.all[key] is not None:
             if not re.match(r"[^[0-9]+\.?[0-9]+$", self.all[key]):

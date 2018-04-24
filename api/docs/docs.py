@@ -1,6 +1,6 @@
 """Book-A-Meal Version 1.0 Documentation
 """
-CREATE_POST_DOCS = {
+CREATE_MEAL_DOCS = {
     "tags": [
         "Meal"
     ],
@@ -21,11 +21,11 @@ CREATE_POST_DOCS = {
                     "title": {
                         "type": "string",
                         "minimum": 3,
-                        "example": "The first meal"
+                        "example": "Beef with chicken"
                     },
                     "price": {
-                        "type": "float"
-                        "example": 200.00
+                        "type": "float",
+                        "example": "200.00"
                     },
                 }
             }

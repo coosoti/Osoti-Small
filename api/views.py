@@ -1,7 +1,10 @@
-from flask import Blueprint
+import uuid
+from flask import Blueprint, request, jsonify
 from .models.database import Database
 from .models.meal import Meal
-from .docs.docs import 
+from .docs.docs import CREATE_MEAL_DOCS
+
+from .input_utils import validate, CREATE_MEAL_RULES
 
 from flasgger.utils import swag_from
 
@@ -9,8 +12,8 @@ v1 = Blueprint('v1', __name__, url_prefix='/api/v1')
 
 
 
-@api.route('/meals', methods=['POST'])
-@swag_from(CREATE_POST_DOCS)
+@v1.route('/meals', methods=['POST'])
+@swag_from(CREATE_MEAL_DOCS)
 def create_meal():
 	"""Create a new meal"""
 	input_data = request.get_json(force=True)
