@@ -93,3 +93,59 @@ GET_MEALS_DOCS = {
         }
     }
 }
+
+GET_MEAL_DOCS = {
+    "tags": [
+        "Book-A-Meal"
+    ],
+    "description": "Get meal details",
+    "parameters": [
+        {
+            "name": "meal_id",
+            "in": "path",
+            "description": "meal id",
+            "schema": {
+                "type": "string",
+                "format": "uuid",
+            },
+            "required": True,
+        }
+    ],
+    "responses": {
+        "200": {
+            "description": "Return response status and message and meal details",
+            "schema": {
+                "id": "get_meal_response",
+                "properties": {
+                    "status": {
+                        "type": "string",
+                        "example": "ok"
+                    },
+                    "message": {
+                        "type": "string",
+                        "example": "meal found"
+                    },
+                    "meal": {
+                        "type": "object",
+                        "schema": {
+                            "properties": {
+                                "id": {
+                                    "type": "string",
+                                    "example": "a69de3743ae24ac89dc3dc2e54c91b3b"
+                                },
+                                "title": {
+                                    "type": "string",
+                                    "example": "The First Post"
+                                },
+                                "price": {
+                                    "type": "float",
+                                    "example": "400.00"
+                                },
+                            }
+                        }
+                    },
+                }
+            },
+        }
+    }
+}
