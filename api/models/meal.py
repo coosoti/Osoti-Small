@@ -44,7 +44,9 @@ class Meal(object):
     def get_meal(cls, meal_id):
         """Gets Meal Details
         """
-        pass
+        for meal in Database.meals:
+            if meal['id'] == meal_id:
+                return meal               
 
     @classmethod
     def meal_already_exist(cls, meal_title):
