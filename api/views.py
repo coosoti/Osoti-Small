@@ -1,4 +1,5 @@
 import uuid
+from functools import wraps
 from flask import Blueprint, request, jsonify
 from werkzeug.security import check_password_hash
 from .models.database import Database
@@ -21,6 +22,44 @@ from .input_utils import validate, CREATE_MEAL_RULES, USER_SIGNUP_RULES, USER_SI
 from flasgger.utils import swag_from
 
 v1 = Blueprint('v1', __name__, url_prefix='/api/v1')
+
+
+def login_required(arg):
+    """ Decorator to check if a user is logged in """
+    @wraps(arg)
+    def wrap(*args, **kwargs):
+        """Checking if token exists in the request header
+        """
+        if request.headers.get('Authorization'):
+            token = request.headers.get('Authorization')
+            if User.token_exists(token) and token_id(token):
+                return arg(*args, **kwargs)
+        response = jsonify({
+            'status': 'error',
+            'message': "Unauthorized"
+        })
+        response.status_code = 401
+        return response
+    return wrap
+
+def admin_required(arg):
+    """ Decorator to check if a user is logged in """
+    @wraps(arg)
+    def wrap(*args, **kwargs):
+        """Checking if token exists in the request header
+        """
+        if request.headers.get('Authorization'):
+            user_id = token_id(request.headers.get('Authorization'))
+            if user_id in [user['id'] for user in Database.users if user['designation'].lower() == "caterer"]:
+                return arg(*args, **kwargs)
+        response = jsonify({
+            'status': 'error',
+            'message': "You don't have permission to view this page"
+        })
+        response.status_code = 403
+        return response
+    return wrap
+
 
 @v1.route('/auth/register', methods=['POST'])
 @swag_from(SIGNUP_DOCS)
@@ -109,6 +148,7 @@ def login():
     return response 
 
 @v1.route('/auth/logout', methods=['POST'])
+@login_required
 @swag_from(SIGNOUT_DOCS)
 def logout():
     """Logs the user out by removing the token"""
@@ -122,12 +162,14 @@ def logout():
 
 @v1.route('/meals', methods=['POST'])
 @swag_from(CREATE_MEAL_DOCS)
+@login_required
+@admin_required
 def create_meal():
     """Create a new meal
     """
     input_data = request.get_json(force=True)
     is_valid = validate(input_data, CREATE_MEAL_RULES)
-
+    
     if is_valid != True:
         response = jsonify(
                     status='error',
@@ -157,6 +199,7 @@ def create_meal():
 
 @v1.route('/meals', methods=['GET'])
 @swag_from(GET_MEALS_DOCS)
+@admin_required
 def get_meals():
     """This function retrieves all meals created by the caterer
     """
@@ -164,7 +207,7 @@ def get_meals():
     if meals:
         response = jsonify({
             'status': 'ok',
-            'message': 'You have ' +str(len(meals)) + ' meals',
+            'message': 'There are ' +str(len(meals)) + ' meals',
             'meals': meals
         })
         response.status_code = 200
@@ -178,6 +221,8 @@ def get_meals():
 
 @v1.route('/meals/<meal_id>', methods=['GET'])
 @swag_from(GET_MEAL_DOCS)
+@login_required
+@admin_required
 def get_meal(meal_id):
     """Retrieves meal
     """
@@ -199,6 +244,8 @@ def get_meal(meal_id):
 
 @v1.route('/meals/<meal_id>', methods=['PUT'])
 @swag_from(UPDATE_MEAL_DOCS)
+@login_required
+@admin_required
 def update_meal(meal_id):
     """Update a meal
     """
@@ -240,6 +287,8 @@ def update_meal(meal_id):
 
 @v1.route('/meals/<meal_id>', methods=['DELETE'])
 @swag_from(DELETE_MEAL_DOCS)
+@login_required
+@admin_required
 def delete_meal(meal_id):
     """Delete meal
     """

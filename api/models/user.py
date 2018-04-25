@@ -6,17 +6,21 @@ from api.models.database import Database
 class User(Database):
     """User class
     """
+    def __init__(self):
+        """Initializer for this class
+        """
+        pass
 
     @classmethod
     def save(cls, data):
-        """This method save user into the main store
+        """This method save user into the main database
         """
         data['password'] = generate_password_hash(data['password'])
         Database.register_user(data)
 
     @classmethod
     def user_already_exists(cls, email):
-        """This method checks if user exists in the main store
+        """This method checks if user exists in the main database
         """
         for user in Database.users:
             if user['email']  == email:
@@ -34,9 +38,17 @@ class User(Database):
     
     @classmethod
     def add_token(cls, token):
-        """This method save auth token to the main store"""
+        """This method save auth token to the main database"""
         Database.save_token(token)
     
+    @classmethod
+    def token_exists(cls, user_token):
+        """This method checks if the auth token exists in the main database"""
+        for token in Database.jwt_tokens:
+            if token == user_token:
+                return True
+        return False
+
     @classmethod
     def check_password(cls, user_id, raw_password):
         """This method is user raw password is similar to the hashed password
@@ -56,11 +68,19 @@ class User(Database):
 
 
     @classmethod
-    def is_admin(cls, user_id, designation):
+    def is_admin(cls, designation):
         """Check is the designation on the user is admin
         """ 
-        # for user in Store.users:
-        #   if user['designation'] == caterer:
-        #       return True
-        # return False
-        pass
+        for user in Database.users:
+          if user['designation'].lower() == "caterer":
+              return True
+        return False
+
+    @classmethod
+    def get_user_designation(cls, designation):
+        """Check is the designation on the user is admin
+        """ 
+        for user in Database.users:
+          if user['designation'] == designation:
+              return user
+        return False    

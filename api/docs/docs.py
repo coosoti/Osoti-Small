@@ -7,6 +7,16 @@ CREATE_MEAL_DOCS = {
     "description": "Meal Creation",
     "parameters": [
         {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Authorization token",
+            "schema": {
+                "type": "string",
+                "format": "uuid",
+            },
+            "required": True,
+        },
+        {
             "name": "body",
             "in": "body",
             "description": "New meal details",
@@ -55,6 +65,18 @@ GET_MEALS_DOCS = {
         "Book-A-Meal"
     ],
     "description": "Get a list of meals created by authenticated caterer",
+    "parameters": [
+        {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Authorization token",
+            "schema": {
+                "type": "string",
+                "format": "uuid",
+            },
+            "required": True,
+        }
+    ],
     "responses": {
         "200": {
             "description": "Return response status and message and a list of posts by the user",
@@ -109,6 +131,16 @@ GET_MEAL_DOCS = {
                 "format": "uuid",
             },
             "required": True,
+        },
+        {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Authorization token",
+            "schema": {
+                "type": "string",
+                "format": "uuid",
+            },
+            "required": True,
         }
     ],
     "responses": {
@@ -156,6 +188,16 @@ UPDATE_MEAL_DOCS = {
     ],
     "description": "Update meal details by the authenticated caterer",
     "parameters": [
+        {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Authorization token",
+            "schema": {
+                "type": "string",
+                "format": "uuid",
+            },
+            "required": True,
+        },
         {
             "name": "meal_id",
             "in": "path",
@@ -213,6 +255,16 @@ DELETE_MEAL_DOCS = {
     ],
     "description": "Meal can only be deleted by authenticated caterer",
     "parameters": [
+        {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Authorization token",
+            "schema": {
+                "type": "string",
+                "format": "uuid",
+            },
+            "required": True,
+        },
         {
             "name": "meal_id",
             "in": "path",
