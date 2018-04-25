@@ -101,7 +101,7 @@ GET_MEALS_DOCS = {
                                 },
                                 "title": {
                                     "type": "string",
-                                    "example": "PBeef with chicken"
+                                    "example": "Beef with chicken"
                                 },
                                 "price": {
                                     "type": "float",
@@ -325,7 +325,7 @@ SIGNUP_DOCS = {
                     },
                     "designation": {
                         "type": "string",
-                        "example": "Customer"
+                        "example": "caterer"
                     },
                     "password": {
                         "type": "string",
@@ -446,6 +446,103 @@ SIGNOUT_DOCS = {
                     },
                 }
             }
+        }
+    }
+}
+
+# menu
+CREATE_MENU_DOCS = {
+    "tags": [
+        "Menu"
+    ],
+    "description": "Menu Creation",
+    "parameters": [
+        # {
+        #     "name": "Authorization",
+        #     "in": "header",
+        #     "description": "Authorization token",
+        #     "schema": {
+        #         "type": "string",
+        #         "format": "uuid",
+        #     },
+        #     "required": True,
+        # }
+    ],
+    "responses": {
+        "201": {
+            "description": "Return response status and response message",
+            "schema": {
+                "properties": {
+                    "status": {
+                        "type": "string",
+                        "example": "ok"
+                    },
+                    "message": {
+                        "type": "string",
+                        "example": "Menu for today has been successfully created"
+                    },
+                }
+            }
+        }
+    }
+}
+
+GET_MENU_DOCS = {
+    "tags": [
+        "Menu"
+    ],
+    "description": "Get a list of menu created by authenticated caterer",
+    "parameters": [
+        # {
+        #     "name": "Authorization",
+        #     "in": "header",
+        #     "description": "Authorization token",
+        #     "schema": {
+        #         "type": "string",
+        #         "format": "uuid",
+        #     },
+        #     "required": True,
+        # }
+    ],
+    "responses": {
+        "200": {
+            "description": "Return response status and message and a list of posts by the user",
+            "schema": {
+                "id": "get_meals_response",
+                "properties": {
+                    "status": {
+                        "type": "string",
+                        "example": "ok"
+                    },
+                    "message": {
+                        "type": "string",
+                        "example": "You have 1 meal"
+                    },
+                    "date": {
+                        "type": "date",
+                        "example": "2018-11-25"
+                    },
+                    "meals": {
+                        "type": "array",
+                        "items": {
+                            "properties": {
+                                "id": {
+                                    "type": "string",
+                                    "example": "a69de3743ae24ac89dc3dc2e54c91b3b"
+                                },
+                                "title": {
+                                    "type": "string",
+                                    "example": "Beef with chicken"
+                                },
+                                "price": {
+                                    "type": "float",
+                                    "example": "600.00"
+                                },
+                            }
+                        }
+                    },
+                }
+            },
         }
     }
 }

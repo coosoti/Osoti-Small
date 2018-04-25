@@ -1,3 +1,4 @@
+import datetime
 import uuid
 from functools import wraps
 from flask import Blueprint, request, jsonify
@@ -12,7 +13,9 @@ from .docs.docs import (
     UPDATE_MEAL_DOCS,
     SIGNUP_DOCS,
     SIGNIN_DOCS,
-    SIGNOUT_DOCS
+    SIGNOUT_DOCS,
+    CREATE_MENU_DOCS,
+    GET_MENU_DOCS
 )
 
 from .auth_helper import get_token, token_id
@@ -307,3 +310,34 @@ def delete_meal(meal_id):
     )
     response.status_code = 400
     return response
+
+@v1.route('/menu', methods=['POST'])
+@swag_from(CREATE_MENU_DOCS)
+def create_menu():
+    """Set day's menu
+    """
+    meals = Meal.get_meals()
+    if meals:
+        date = datetime.datetime.today().strftime('%Y-%m-%d')
+    Database.set_menu(date, meals)        
+    response = jsonify({
+        'status': 'ok',
+        'message': "Menu has been successfully created"
+    })
+    response.status_code = 201
+    return response
+
+@v1.route('/menu', methods=['GET'])
+@swag_from(GET_MENU_DOCS)
+def get_menu():
+    """Set day's menu
+    """
+    menu = Database.menu        
+    response = jsonify({
+        'status': 'ok',
+        'message': "Menu found",
+        'menu': menu
+    })
+    response.status_code = 201
+    return response
+    

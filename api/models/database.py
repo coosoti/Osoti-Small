@@ -6,7 +6,7 @@ class Database(object):
     """
 
     meals = []
-    menu = []
+    menu = {}
     orders = []
     users = []
     jwt_tokens = []
@@ -75,5 +75,13 @@ class Database(object):
         """This method will edit user's order from the orders list
         """
 
-        pass    
+        pass
+
+    @classmethod
+    def set_menu(cls, date, data):
+        """Set menu method
+        """        
+        if not date in cls.menu:
+            cls.menu[date] = []
+        cls.menu[date].append(data)        
                 
