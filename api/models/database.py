@@ -83,5 +83,8 @@ class Database(object):
         """        
         if not date in cls.menu:
             cls.menu[date] = []
-        cls.menu[date].append(data)        
+        cls.menu[date].append(data)
+
+
+              
                 

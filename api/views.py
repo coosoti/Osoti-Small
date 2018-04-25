@@ -332,11 +332,13 @@ def create_menu():
 def get_menu():
     """Set day's menu
     """
-    menu = Database.menu        
+    menu = Database.menu
+    date = datetime.datetime.today().strftime('%Y-%m-%d')        
     response = jsonify({
         'status': 'ok',
         'message': "Menu found",
-        'menu': menu
+        'date': date,
+        'menu': menu[date][0]
     })
     response.status_code = 201
     return response
