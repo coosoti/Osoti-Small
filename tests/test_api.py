@@ -31,5 +31,10 @@ class MainTests(unittest.TestCase):
             'confirm_password': 'kulundeng'
         }
 
+        self.orders_data = {
+            'id': uuid.uuid4().hex,
+            'meal': self.meal_data   
+        }
+
 
 
