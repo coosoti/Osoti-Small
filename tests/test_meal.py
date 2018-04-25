@@ -1,6 +1,6 @@
 """Testing the Meal Class
 """
-
+import datetime
 from flask import json
 from tests.test_api import MainTests
 from api.models.meal import Meal
@@ -88,6 +88,23 @@ class MealTests(MainTests):
         self.assertEqual(response.status_code, 202)
         self.assertIn(b'The meal has been successfully updated', response.data)
 
-                         
+    # testing menu routes
+    def test_set_up_menu(self):
+        """Test add meal to today's menu list 
+        """
+         response = self.app.post('/api/v1/menu', data=json.dumps({
+            'date': datetime.datetime.today().strftime('%Y-%m-%d'),
+            'meal': self.meal_data
+            }))
+        self.assertEqual(response.status_code, 201)
+        self.assertIn(b'Menu Successfully Created', response.data)
+
+    def test_get_menu(self):
+        """Testing retrieval of menu
+        """
+        response = self.app.get('/api/v1/menu')
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(b'6 meals found in today menu', response.data)    
+                                 
 
 
