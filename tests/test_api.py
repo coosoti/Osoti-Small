@@ -34,6 +34,10 @@ class MainTests(unittest.TestCase):
             'password': 'kulundeng',
             'confirm_password': 'kulundeng'
         }
+        self.orders_data = {
+            'date': '2018-4-25',
+            'meals': []
+        }
 
         test_user = User()
         test_user.save({
@@ -47,7 +51,6 @@ class MainTests(unittest.TestCase):
 
         Meal.save(self.meal_data)
         with app.test_request_context():
-            # User id that will be used to create an orphan token
             orphan_id = uuid.uuid4().hex
             test_user.save({
                 'id': orphan_id,
@@ -57,22 +60,9 @@ class MainTests(unittest.TestCase):
                 'password': self.user_data['password'],
                 'confirm_password': self.user_data['confirm_password']
             })
-            # Issue a token the the test user (sample_user)
             # Store test token in auth storage auth_token list
             token = get_token(self.user_data['id'])
-            # Orphan token: User token that do not have any registered business
-            orphan_token = get_token(orphan_id)
-            expired_token = get_token(self.user_data['id'], -3600)
-            # Create bad signature token
-            # Bad signature: #nt secret key from the one used in our API used
-            # to hash tokens
             other_signature_token = get_token(
                 self.user_data['id'], 3600, 'other_signature')
             User().add_token(token)
-            User().add_token(expired_token)
-            User().add_token(orphan_token)
-            User().add_token(other_signature_token)
             self.test_token = token
-            self.expired_test_token = expired_token
-            self.other_signature_token = other_signature_token
-            self.orphan_test_token = orphan_token
