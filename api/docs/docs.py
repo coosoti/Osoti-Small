@@ -2,7 +2,7 @@
 """
 CREATE_MEAL_DOCS = {
     "tags": [
-        "Book-A-Meal"
+        "Meal"
     ],
     "description": "Meal Creation",
     "parameters": [
@@ -62,7 +62,7 @@ CREATE_MEAL_DOCS = {
 
 GET_MEALS_DOCS = {
     "tags": [
-        "Book-A-Meal"
+        "Meal"
     ],
     "description": "Get a list of meals created by authenticated caterer",
     "parameters": [
@@ -118,7 +118,7 @@ GET_MEALS_DOCS = {
 
 GET_MEAL_DOCS = {
     "tags": [
-        "Book-A-Meal"
+        "Meal"
     ],
     "description": "Get meal details",
     "parameters": [
@@ -184,7 +184,7 @@ GET_MEAL_DOCS = {
 
 UPDATE_MEAL_DOCS = {
     "tags": [
-        "Book-A-Meal"
+        "Meal"
     ],
     "description": "Update meal details by the authenticated caterer",
     "parameters": [
@@ -251,7 +251,7 @@ UPDATE_MEAL_DOCS = {
 
 DELETE_MEAL_DOCS = {
     "tags": [
-        "Book-A-Meal"
+        "Meal"
     ],
     "description": "Meal can only be deleted by authenticated caterer",
     "parameters": [
@@ -683,7 +683,7 @@ UPDATE_ORDER_DOCS = {
 
                         ]
                     },
-                    
+
                 }
             }
         }
