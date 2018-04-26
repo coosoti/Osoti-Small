@@ -147,7 +147,7 @@ def login():
         'status': 'error',
         'message': 'Invalid email or password'
     })
-    response.status_code = 401
+    response.status_code = 400
     return response 
 
 @v1.route('/auth/logout', methods=['POST'])
@@ -311,21 +311,53 @@ def delete_meal(meal_id):
     response.status_code = 400
     return response
 
+# @v1.route('/menu', methods=['POST'])
+# @swag_from(CREATE_MENU_DOCS)
+# def create_menu():
+#     """Set day's menu
+#     """
+#     meals = Meal.get_meals()
+#     if meals:
+#         date = datetime.datetime.today().strftime('%Y-%m-%d')
+#     Database.set_menu(date, meals)        
+#     response = jsonify({
+#         'status': 'ok',
+#         'message': "Menu has been successfully created"
+#     })
+#     response.status_code = 201
+#     return response
+
 @v1.route('/menu', methods=['POST'])
 @swag_from(CREATE_MENU_DOCS)
 def create_menu():
     """Set day's menu
     """
-    meals = Meal.get_meals()
+    input_data = request.get_json(force=True)
+    ids = input_data['ids']
+    for id in ids:
+        if len(id) != 32:
+            response = jsonify({
+            'status': 'error',
+            'message': "Invalid meal id selected"
+            })
+            response.status_code = 400
+            return response
+    meals = [meal for meal in Database.meals if meal.get('id') in ids]
     if meals:
         date = datetime.datetime.today().strftime('%Y-%m-%d')
-    Database.set_menu(date, meals)        
+        Database.set_menu(date, meals)        
+        response = jsonify({
+            'status': 'ok',
+            'message': "Menu has been successfully created"
+        })
+        response.status_code = 201
+        return response
     response = jsonify({
-        'status': 'ok',
-        'message': "Menu has been successfully created"
+            'status': 'error',
+            'message': "Meal selected not found"
     })
-    response.status_code = 201
-    return response
+    response.status_code = 400
+    return response    
 
 @v1.route('/menu', methods=['GET'])
 @swag_from(GET_MENU_DOCS)
@@ -333,13 +365,20 @@ def get_menu():
     """Set day's menu
     """
     menu = Database.menu
-    date = datetime.datetime.today().strftime('%Y-%m-%d')        
-    response = jsonify({
-        'status': 'ok',
-        'message': "Menu found",
-        'date': date,
-        'menu': menu[date][0]
-    })
-    response.status_code = 201
-    return response
+    if menu:
+        date = datetime.datetime.today().strftime('%Y-%m-%d')        
+        response = jsonify({
+            'status': 'ok',
+            'message': "Menu found",
+            'date': date,
+            'menu': menu[date][0]
+        })
+        response.status_code = 201
+        return response
+    response =  jsonify(
+        status='error',
+        message='No menu found' 
+    )
+    response.status_code = 400
+    return response    
     

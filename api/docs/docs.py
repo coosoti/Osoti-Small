@@ -467,6 +467,25 @@ CREATE_MENU_DOCS = {
         #     },
         #     "required": True,
         # }
+        {
+            "name": "body",
+            "in": "body",
+            "description": "meal id",
+            "required": True,
+            "schema": {
+                "id": "menu_set",
+                "required": [
+                    "ids"
+                ],
+                "properties": {
+                    "ids": {
+                        "type": "uuid",
+                        "example": ["a69de3743ae24ac89dc3dc2e54c91b3b",
+                                    "a69de3743ae24ac89dc3dc2e54c91b3b"]
+                    },
+                }
+            }
+        }
     ],
     "responses": {
         "201": {

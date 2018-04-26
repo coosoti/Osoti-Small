@@ -10,6 +10,7 @@ CREATE_MEAL_RULES = [
     {'price': [('float', True), ('required', True)]},
 ]
 
+
 USER_SIGNUP_RULES = [
     {'username': [('string', True), ('minimum', 6), ('maximum', 20), ('required', True)]},
     {'email': [('minimum', 12), ('maximum', 30), ('required', True), ('email', True)]},
@@ -23,6 +24,7 @@ USER_SIGNIN_RULES = [
     {'email': [('minimum', 12), ('required', True)]},
     {'password': [('minimum', 8), ('required', True)]},
 ]
+
 
 def validate(inputs, input_rules):
     """ Method to implement validation rules on user input. """
