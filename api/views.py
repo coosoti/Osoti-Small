@@ -1,4 +1,5 @@
 import datetime
+from time import strftime
 import uuid
 from functools import wraps
 from flask import Blueprint, request, jsonify
@@ -15,7 +16,8 @@ from .docs.docs import (
     SIGNIN_DOCS,
     SIGNOUT_DOCS,
     CREATE_MENU_DOCS,
-    GET_MENU_DOCS
+    GET_MENU_DOCS,
+    MAKE_ORDER_DOCS
 )
 
 from .auth_helper import get_token, token_id
@@ -362,7 +364,7 @@ def create_menu():
 @v1.route('/menu', methods=['GET'])
 @swag_from(GET_MENU_DOCS)
 def get_menu():
-    """Set day's menu
+    """Get day's menu
     """
     menu = Database.menu
     if menu:
@@ -371,7 +373,7 @@ def get_menu():
             'status': 'ok',
             'message': "Menu found",
             'date': date,
-            'menu': menu[date][0]
+            'meals': menu[date][0]
         })
         response.status_code = 201
         return response
@@ -381,4 +383,58 @@ def get_menu():
     )
     response.status_code = 400
     return response    
-    
+
+@v1.route('/orders', methods=['POST'])
+@swag_from(MAKE_ORDER_DOCS)
+def make_order():
+    """Make an order
+    """
+    date = datetime.datetime.today().strftime('%Y-%m-%d')
+    today_menu = Database.menu
+    if not bool(today_menu):
+        response = jsonify({
+            'status': 'error',
+            'message': 'The menu has not been set.'
+            })
+        response.status_code = 400
+        return response    
+    menu_meals = Database.menu[date][0]
+    input_data = request.get_json(force=True)
+    ids = input_data['ids']
+    for id in ids:
+        if len(id) != 32:
+            response = jsonify({
+            'status': 'error',
+            'message': "Invalid meal id selected"
+            })
+            response.status_code = 400
+            return response         
+    if menu_meals:        
+        my_orders = [meal for meal in menu_meals if meal.get('id') in ids]
+
+        if len(my_orders) > 0:
+            data = {
+                'id': uuid.uuid4().hex,
+                'date': datetime.datetime.today().strftime('%Y-%m-%d'),
+                'time': strftime("%H:%M:%S"),
+                'my_orders': my_orders
+            }
+            Database.save_order(data)        
+            response = jsonify({
+                'status': 'ok',
+                'message': "Order successful",
+            })
+            response.status_code = 200
+            return response
+        response = jsonify({
+                'status': 'ok',
+                'message': "Order successful",
+            })
+        response.status_code = 200
+        return response    
+    response =  jsonify(
+        status='error',
+        message='No menu found' 
+    )
+    response.status_code = 400
+    return response    

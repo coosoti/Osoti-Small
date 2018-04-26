@@ -65,10 +65,10 @@ class Database(object):
 
     # Methods for orders
     @classmethod
-    def save_order(cls, meal_id):
+    def save_order(cls, data):
         """This method saves user's order to the orders stores
         """
-        pass
+        cls.orders.append(data)
 
     @classmethod
     def update_order(cls, order_id):
