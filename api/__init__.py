@@ -1,5 +1,4 @@
 """ Initialize the app 
-
 """
 
 from flask import Flask
