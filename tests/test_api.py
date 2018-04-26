@@ -8,6 +8,7 @@ from api.models.meal import Meal
 from api.models.user import User
 from api import app
 
+
 class MainTests(unittest.TestCase):
     """Test for the API
     """
@@ -75,6 +76,3 @@ class MainTests(unittest.TestCase):
             self.expired_test_token = expired_token
             self.other_signature_token = other_signature_token
             self.orphan_test_token = orphan_token
-
-
-

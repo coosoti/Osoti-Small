@@ -7,10 +7,10 @@ from werkzeug.security import check_password_hash
 from .models.database import Database
 from .models.meal import Meal
 from .models.user import User
-from .docs.docs import ( 
+from .docs.docs import (
     CREATE_MEAL_DOCS,
-    DELETE_MEAL_DOCS, 
-    GET_MEALS_DOCS, GET_MEAL_DOCS, 
+    DELETE_MEAL_DOCS,
+    GET_MEALS_DOCS, GET_MEAL_DOCS,
     UPDATE_MEAL_DOCS,
     SIGNUP_DOCS,
     SIGNIN_DOCS,
@@ -18,12 +18,14 @@ from .docs.docs import (
     CREATE_MENU_DOCS,
     GET_MENU_DOCS,
     MAKE_ORDER_DOCS,
-    UPDATE_ORDER_DOCS
+    UPDATE_ORDER_DOCS,
+    GET_ORDERS_DOCS
 )
 
 from .auth_helper import get_token, token_id
 
-from .input_utils import validate, CREATE_MEAL_RULES, USER_SIGNUP_RULES, USER_SIGNIN_RULES
+from .input_utils import (validate, CREATE_MEAL_RULES,
+                          USER_SIGNUP_RULES, USER_SIGNIN_RULES)
 
 from flasgger.utils import swag_from
 
@@ -48,15 +50,18 @@ def login_required(arg):
         return response
     return wrap
 
+
 def admin_required(arg):
-    """ Decorator to check if a user is logged in """
+    """ Decorator to check if a user is logged in
+    """
     @wraps(arg)
     def wrap(*args, **kwargs):
         """Checking if token exists in the request header
         """
         if request.headers.get('Authorization'):
             user_id = token_id(request.headers.get('Authorization'))
-            if user_id in [user['id'] for user in Database.users if user['designation'].lower() == "caterer"]:
+            if user_id in [user['id'] for user in Database.users if
+                           user['designation'].lower() == "caterer"]:
                 return arg(*args, **kwargs)
         response = jsonify({
             'status': 'error',
@@ -76,8 +81,8 @@ def register():
     input_data = request.get_json(force=True)
     if is_valid != True:
         response = jsonify(
-            status='error', 
-            message="Please provide valid email and password", 
+            status='error',
+            message="Please provide valid email and password",
             errors=is_valid
         )
         response.status_code = 400
@@ -104,7 +109,8 @@ def register():
         'message':  "You have been successfully registered"
     })
     response.status_code = 201
-    return response     
+    return response
+
 
 @v1.route('/auth/login', methods=['POST'])
 @swag_from(SIGNIN_DOCS)
@@ -115,8 +121,8 @@ def login():
 
     if is_valid != True:
         response = jsonify(
-            status='error', 
-            message="Please provide corrent email or password", 
+            status='error',
+            message="Please provide corrent email or password",
             errors=is_valid
         )
         response.status_code = 400
@@ -143,7 +149,7 @@ def login():
         response = jsonify({
             'status': 'error',
             'message': 'Invalid password'
-        })  
+        })
         response.status_code = 401
         return response
     response = jsonify({
@@ -151,7 +157,8 @@ def login():
         'message': 'Invalid email or password'
     })
     response.status_code = 400
-    return response 
+    return response
+
 
 @v1.route('/auth/logout', methods=['POST'])
 @login_required
@@ -166,6 +173,7 @@ def logout():
     response.status_code = 200
     return response
 
+
 @v1.route('/meals', methods=['POST'])
 @swag_from(CREATE_MEAL_DOCS)
 @login_required
@@ -175,12 +183,12 @@ def create_meal():
     """
     input_data = request.get_json(force=True)
     is_valid = validate(input_data, CREATE_MEAL_RULES)
-    
+
     if is_valid != True:
         response = jsonify(
-                    status='error',
-                    message='Please fill in with valid data',
-                    errors=is_valid)
+            status='error',
+            message='Please fill in with valid data',
+            errors=is_valid)
         response.status_code = 400
         return response
     data = {
@@ -190,7 +198,7 @@ def create_meal():
     }
     if Meal.meal_already_exist(input_data['title']):
         response = jsonify(
-            status='error', 
+            status='error',
             message="You have already submitted a meal with the same title"
         )
         response.status_code = 400
@@ -203,6 +211,7 @@ def create_meal():
     response.status_code = 201
     return response
 
+
 @v1.route('/meals', methods=['GET'])
 @swag_from(GET_MEALS_DOCS)
 @admin_required
@@ -213,17 +222,18 @@ def get_meals():
     if meals:
         response = jsonify({
             'status': 'ok',
-            'message': 'There are ' +str(len(meals)) + ' meals',
+            'message': 'There are ' + str(len(meals)) + ' meals',
             'meals': meals
         })
         response.status_code = 200
         return response
     response = jsonify(
         status='error',
-        message='The are no meals' 
+        message='The are no meals'
     )
     response.status_code = 204
     return response
+
 
 @v1.route('/meals/<meal_id>', methods=['GET'])
 @swag_from(GET_MEAL_DOCS)
@@ -241,12 +251,13 @@ def get_meal(meal_id):
         })
         response.status_code = 200
         return response
-    response =  jsonify(
+    response = jsonify(
         status='error',
-        message='No meal with that id' 
+        message='No meal with that id'
     )
     response.status_code = 400
     return response
+
 
 @v1.route('/meals/<meal_id>', methods=['PUT'])
 @swag_from(UPDATE_MEAL_DOCS)
@@ -257,7 +268,7 @@ def update_meal(meal_id):
     """
     input_data = request.get_json(force=True)
     meal = Meal.get_meal(meal_id)
-    if meal: 
+    if meal:
         is_valid = validate(input_data, CREATE_MEAL_RULES)
         if is_valid != True:
             response = jsonify(
@@ -284,12 +295,11 @@ def update_meal(meal_id):
         })
         response.status_code = 202
         return response
-    response = jsonify(
-        status='error',
-        message='This meal does not exist or you do have the permission to edit it' 
-    )
+    response = jsonify(status='error',
+                       message='This meal does not exist or you do have the permission to edit it')
     response.status_code = 400
-    return response    
+    return response
+
 
 @v1.route('/meals/<meal_id>', methods=['DELETE'])
 @swag_from(DELETE_MEAL_DOCS)
@@ -307,10 +317,8 @@ def delete_meal(meal_id):
         })
         response.status_code = 202
         return response
-    response = jsonify(
-        status='error',
-        message="This meal does not exist or you do not have the permission to delete it" 
-    )
+    response = jsonify(status='error',
+                       message="This meal does not exist or you do not have the permission to delete it")
     response.status_code = 400
     return response
 
@@ -322,13 +330,14 @@ def delete_meal(meal_id):
 #     meals = Meal.get_meals()
 #     if meals:
 #         date = datetime.datetime.today().strftime('%Y-%m-%d')
-#     Database.set_menu(date, meals)        
+#     Database.set_menu(date, meals)
 #     response = jsonify({
 #         'status': 'ok',
 #         'message': "Menu has been successfully created"
 #     })
 #     response.status_code = 201
 #     return response
+
 
 @v1.route('/menu', methods=['POST'])
 @swag_from(CREATE_MENU_DOCS)
@@ -340,15 +349,15 @@ def create_menu():
     for id in ids:
         if len(id) != 32:
             response = jsonify({
-            'status': 'error',
-            'message': "Invalid meal id selected"
+                'status': 'error',
+                'message': "Invalid meal id selected"
             })
             response.status_code = 400
             return response
     meals = [meal for meal in Database.meals if meal.get('id') in ids]
     if meals:
         date = datetime.datetime.today().strftime('%Y-%m-%d')
-        Database.set_menu(date, meals)        
+        Database.set_menu(date, meals)
         response = jsonify({
             'status': 'ok',
             'message': "Menu has been successfully created"
@@ -356,11 +365,12 @@ def create_menu():
         response.status_code = 201
         return response
     response = jsonify({
-            'status': 'error',
-            'message': "Meal selected not found"
+        'status': 'error',
+        'message': "Meal selected not found"
     })
     response.status_code = 400
-    return response    
+    return response
+
 
 @v1.route('/menu', methods=['GET'])
 @swag_from(GET_MENU_DOCS)
@@ -369,7 +379,7 @@ def get_menu():
     """
     menu = Database.menu
     if menu:
-        date = datetime.datetime.today().strftime('%Y-%m-%d')        
+        date = datetime.datetime.today().strftime('%Y-%m-%d')
         response = jsonify({
             'status': 'ok',
             'message': "Menu found",
@@ -378,12 +388,13 @@ def get_menu():
         })
         response.status_code = 201
         return response
-    response =  jsonify(
+    response = jsonify(
         status='error',
-        message='No menu found' 
+        message='No menu found'
     )
     response.status_code = 400
-    return response    
+    return response
+
 
 @v1.route('/orders', methods=['POST'])
 @swag_from(MAKE_ORDER_DOCS)
@@ -396,21 +407,21 @@ def make_order():
         response = jsonify({
             'status': 'error',
             'message': 'The menu has not been set.'
-            })
+        })
         response.status_code = 400
-        return response    
+        return response
     menu_meals = Database.menu[date][0]
     input_data = request.get_json(force=True)
     ids = input_data['ids']
     for id in ids:
         if len(id) != 32:
             response = jsonify({
-            'status': 'error',
-            'message': "Invalid meal id selected"
+                'status': 'error',
+                'message': "Invalid meal id selected"
             })
             response.status_code = 400
-            return response         
-    if menu_meals:        
+            return response
+    if menu_meals:
         my_orders = [meal for meal in menu_meals if meal.get('id') in ids]
 
         if len(my_orders) > 0:
@@ -420,7 +431,7 @@ def make_order():
                 'time': strftime("%H:%M:%S"),
                 'my_orders': my_orders
             }
-            Database.save_order(data)        
+            Database.save_order(data)
             response = jsonify({
                 'status': 'ok',
                 'message': "Order successful",
@@ -428,17 +439,18 @@ def make_order():
             response.status_code = 200
             return response
         response = jsonify({
-                'status': 'error',
-                'message': "Meal not in menu",
+            'status': 'error',
+            'message': "Meal not in menu",
         })
         response.status_code = 400
-        return response    
-    response =  jsonify(
+        return response
+    response = jsonify(
         status='error',
-        message='No menu found' 
+        message='No menu found'
     )
     response.status_code = 400
     return response
+
 
 @v1.route('/orders/<order_id>', methods=['PUT'])
 @swag_from(UPDATE_ORDER_DOCS)
@@ -448,14 +460,15 @@ def update_order(order_id):
     input_data = request.get_json(force=True)
     order = [order for order in Database.orders if order['id'] == order_id]
 
-    if order: 
+    if order:
         data = {
             'ids': input_data['ids'],
         }
-        new_orders = [meal for meal in Database.meals if meal.get('id') in data['ids']]
+        new_orders = [meal for meal in Database.meals if meal.get(
+            'id') in data['ids']]
         if new_orders:
             data = {
-               'my_orders': new_orders 
+                'my_orders': new_orders
             }
             Database.update_order(data)
             response = jsonify({
@@ -464,9 +477,30 @@ def update_order(order_id):
             })
             response.status_code = 202
             return response
+    response = jsonify(status='error',
+                       message='This order does not exist or you do have the permission to edit it')
+    response.status_code = 400
+    return response
+
+
+@v1.route('/orders', methods=['GET'])
+@swag_from(GET_ORDERS_DOCS)
+def get_orders():
+    """This function retrieves all orders made by customers
+    """
+    orders = Database.orders
+    print(orders)
+    if orders:
+        response = jsonify({
+            'status': 'ok',
+            'message': 'There are ' + str(len(orders)) + ' orders',
+            'orders': orders
+        })
+        response.status_code = 200
+        return response
     response = jsonify(
         status='error',
-        message='This order does not exist or you do have the permission to edit it' 
+        message='The are no orders'
     )
-    response.status_code = 400
-    return response        
+    response.status_code = 204
+    return response

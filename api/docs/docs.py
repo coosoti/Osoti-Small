@@ -707,3 +707,59 @@ UPDATE_ORDER_DOCS = {
         }
     }
 }
+
+GET_ORDERS_DOCS = {
+    "tags": [
+        "Order"
+    ],
+    "description": "Get a list of orders made by authenticated customers",
+    # "parameters": [
+    #     {
+    #         "name": "Authorization",
+    #         "in": "header",
+    #         "description": "Authorization token",
+    #         "schema": {
+    #             "type": "string",
+    #             "format": "uuid",
+    #         },
+    #         "required": True,
+    #     }
+    # ],
+    "responses": {
+        "200": {
+            "description": "Return response status and message and a list of posts by the user",
+            "schema": {
+                "id": "get_meals_response",
+                "properties": {
+                    "status": {
+                        "type": "string",
+                        "example": "ok"
+                    },
+                    "message": {
+                        "type": "string",
+                        "example": "You have 1 meal"
+                    },
+                    "meals": {
+                        "type": "array",
+                        "items": {
+                            "properties": {
+                                "id": {
+                                    "type": "string",
+                                    "example": "a69de3743ae24ac89dc3dc2e54c91b3b"
+                                },
+                                "title": {
+                                    "type": "string",
+                                    "example": "Beef with chicken"
+                                },
+                                "price": {
+                                    "type": "float",
+                                    "example": "600.00"
+                                },
+                            }
+                        }
+                    },
+                }
+            },
+        }
+    }
+}

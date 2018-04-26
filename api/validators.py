@@ -1,5 +1,5 @@
 """ This class validates user input and will be used in the input_utils module
-"""  
+"""
 
 import re
 
@@ -29,7 +29,7 @@ class Validation:
             if self.all[confirm] != self.all[key]:
                 return confirm + " don't match"
             return True
-        return True        
+        return True
 
     def string(self, key, string):
         """Check if the input given is a string"""
@@ -45,24 +45,24 @@ class Validation:
             if not re.match(r"[^[0-9]+\.?[0-9]+$", self.all[key]):
                 return True
             return key + " should be a type float e.g 450.00"
-        return True    
+        return True
 
     def minimum(self, key, minimum):
         """Check the required character size"""
         if key in self.all and self.all[key] is not None:
             if len(self.all[key]) < int(minimum):
-                return key + " should not be less than "+ str(minimum) + " characters"
+                return key + " should not be less than " + str(minimum) + " characters"
             return True
-        return True     
+        return True
 
     def maximum(self, key, maximum):
         """Check the required character size"""
         if key in self.all and self.all[key] is not None:
             if len(self.all[key]) > int(maximum):
-                return key + " should not be greater than "+ str(maximum) + " characaters"
+                return key + " should not be greater than " + str(maximum) + " characaters"
             return True
-        return True     
-                
+        return True
+
     def required(self, key, is_required=True):
         """Check input it is required"""
         if key in self.all:

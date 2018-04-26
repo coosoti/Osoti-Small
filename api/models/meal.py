@@ -37,14 +37,14 @@ class Meal(object):
         """
         meals = [meal for meal in Database.meals]
         return meals
-            
+
     @classmethod
     def get_meal(cls, meal_id):
         """Gets Meal Details
         """
         for meal in Database.meals:
             if meal['id'] == meal_id:
-                return meal               
+                return meal
 
     @classmethod
     def meal_already_exist(cls, meal_title):
@@ -53,5 +53,4 @@ class Meal(object):
         for meal in Database.meals:
             if (meal['title'].lower() == meal_title.lower()):
                 return True
-        return False        
-
+        return False

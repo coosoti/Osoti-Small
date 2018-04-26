@@ -1,6 +1,7 @@
 """Database class to store data - implemented by data structures
 """
 
+
 class Database(object):
     """Main db to store all data
     """
@@ -36,13 +37,14 @@ class Database(object):
     def save_meal(cls, data):
         """This method will append meal option to the meal's list
         """
-        cls.meals.append(data)        
+        cls.meals.append(data)
 
     @classmethod
     def delete_meal(cls, meal_id):
         """This method will remove meal option from the meal's list
         """
-        cls.meals[:] = [meal for meal in cls.meals if meal.get('id') !=meal_id]
+        cls.meals[:] = [
+            meal for meal in cls.meals if meal.get('id') != meal_id]
 
     @classmethod
     def update_meal(cls, meal_id, data):
@@ -53,8 +55,8 @@ class Database(object):
                 # this appends existing meal id to the data
                 data['id'] = meal_id
                 cls.meals[key] = data
-                break          
-           
+                break
+
     # Methods for menu
     @classmethod
     def save_menu(cls, meal_id):
@@ -78,17 +80,13 @@ class Database(object):
             if cls.orders[key]['id'] == order_id:
                 # this appends existing meal id to the data
                 data['id'] = order_id
-                cls.order[key] = data
-                break     
+                cls.orders[key] = data
+                break
 
     @classmethod
     def set_menu(cls, date, data):
         """Set menu method
-        """        
+        """
         if not date in cls.menu:
             cls.menu[date] = []
         cls.menu[date].append(data)
-
-
-              
-                

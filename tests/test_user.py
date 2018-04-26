@@ -35,7 +35,8 @@ class UserTests(MainTests):
             'confirm_password': self.user_data['confirm_password']
         }), content_type='application/json')
         self.assertEqual(response.status_code, 400)
-        self.assertIn(b'Sorry. The email you provided has been taken.', response.data)
+        self.assertIn(
+            b'Sorry. The email you provided has been taken.', response.data)
 
     def test_login(self):
         """Testing login
@@ -55,13 +56,14 @@ class UserTests(MainTests):
             'password': 'we'
         }), content_type='application/json')
         self.assertEqual(response.status_code, 400)
-        self.assertIn(b'Please provide corrent email or password', response.data)
+        self.assertIn(
+            b'Please provide corrent email or password', response.data)
 
     def test_logout(self):
         """Test Logout method
         """
         response = self.app.post('/api/v1/auth/logout', data={},
-            headers={'Authorization': self.test_token})
+                                 headers={'Authorization': self.test_token})
         self.assertEqual(response.status_code, 200)
         self.assertIn(b'You have successfully logged out', response.data)
 
@@ -75,9 +77,9 @@ class UserTests(MainTests):
             'confirm_password': 'kulundeng'
         }), content_type='application/json')
         self.assertEqual(response.status_code, 400)
-        self.assertIn(b'username should not be less than 6 characters', response.data)
+        self.assertIn(
+            b'username should not be less than 6 characters', response.data)
         self.assertIn(b'Invalid email address', response.data)
-        self.assertIn(b'password should not be less than 8 characters', response.data)
+        self.assertIn(
+            b'password should not be less than 8 characters', response.data)
         self.assertIn(b'designation is required', response.data)
-        
-

@@ -5,18 +5,21 @@ from .validators import Validation
 # Create meal validation rules
 
 CREATE_MEAL_RULES = [
-    #Assuming food with minimal characters in title is three  e.g tea
+    # Assuming food with minimal characters in title is three  e.g tea
     {'title': [('minimum', 3), ('required', True)]},
     {'price': [('float', True), ('required', True)]},
 ]
 
 
 USER_SIGNUP_RULES = [
-    {'username': [('string', True), ('minimum', 6), ('maximum', 20), ('required', True)]},
-    {'email': [('minimum', 12), ('maximum', 30), ('required', True), ('email', True)]},
+    {'username': [('string', True), ('minimum', 6),
+                  ('maximum', 20), ('required', True)]},
+    {'email': [('minimum', 12), ('maximum', 30),
+               ('required', True), ('email', True)]},
     {'designation': [('minimum', 5), ('maximum', 10), ('required', True)]},
     {'password': [('minimum', 8), ('maximum', 20), ('required', True)]},
-    {'confirm_password': [('minimum', 8), ('maximum', 20), ('required', True), ('confirm', 'password')]},
+    {'confirm_password': [('minimum', 8), ('maximum', 20),
+                          ('required', True), ('confirm', 'password')]},
 ]
 
 
