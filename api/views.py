@@ -2,7 +2,7 @@ import uuid
 from flask import Blueprint, request, jsonify
 from .models.database import Database
 from .models.meal import Meal
-from .docs.docs import CREATE_MEAL_DOCS
+from .docs.docs import CREATE_MEAL_DOCS, GET_MEALS_DOCS
 
 from .input_utils import validate, CREATE_MEAL_RULES
 
@@ -15,7 +15,8 @@ v1 = Blueprint('v1', __name__, url_prefix='/api/v1')
 @v1.route('/meals', methods=['POST'])
 @swag_from(CREATE_MEAL_DOCS)
 def create_meal():
-	"""Create a new meal"""
+	"""Create a new meal
+	"""
 	input_data = request.get_json(force=True)
 	is_valid = validate(input_data, CREATE_MEAL_RULES)
 
@@ -45,3 +46,25 @@ def create_meal():
 	})
 	response.status_code = 201
 	return response
+
+@v1.route('/meals', methods=['GET'])
+@swag_from(GET_MEALS_DOCS)
+def get_meals():
+	"""This function retrieves all meals created by the caterer
+	"""
+	meals = Meal.get_meals()
+	if meals:
+		response = jsonify({
+			'status': 'ok',
+			'message': 'You have ' +str(len(meals)) + ' meals',
+			'meals': meals
+		})
+		response.status_code = 200
+		return response
+	response = jsonify(
+		status='error',
+		message='The are no meals' 
+	)
+	response.status_code = 204
+	return response
+
