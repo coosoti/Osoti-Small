@@ -74,8 +74,12 @@ class Database(object):
     def update_order(cls, order_id):
         """This method will edit user's order from the orders list
         """
-
-        pass
+        for key in range(0, len(cls.orders)):
+            if cls.orders[key]['id'] == order_id:
+                # this appends existing meal id to the data
+                data['id'] = order_id
+                cls.order[key] = data
+                break     
 
     @classmethod
     def set_menu(cls, date, data):

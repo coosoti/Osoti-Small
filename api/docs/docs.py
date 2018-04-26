@@ -640,3 +640,70 @@ MAKE_ORDER_DOCS = {
         }
     }
 }
+
+UPDATE_ORDER_DOCS = {
+    "tags": [
+        "Order"
+    ],
+    "description": "Update order details by the authenticated customer",
+    "parameters": [
+        # {
+        #     "name": "Authorization",
+        #     "in": "header",
+        #     "description": "Authorization token",
+        #     "schema": {
+        #         "type": "string",
+        #         "format": "uuid",
+        #     },
+        #     "required": True,
+        # },
+        {
+            "name": "order_id",
+            "in": "path",
+            "description": "order id",
+            "type": "string",
+            "required": True,
+        },
+        {
+            "name": "body",
+            "in": "body",
+            "description": "New order details",
+            "required": True,
+            "schema": {
+                "id": "update_order_data",
+                "required": [
+                    "ids",
+                ],
+                "properties": {
+                    "ids": {
+                        "type": "string",
+                        "example": [
+                            "a69de3743ae24ac89dc3dc2e54c91b3b",
+                            "a69de3743ae24ac89dc3dc2e54c91b3b"
+
+                        ]
+                    },
+                    
+                }
+            }
+        }
+    ],
+    "responses": {
+        "201": {
+            "description": "Return response status and response message",
+            "schema": {
+                "id": "update_meal_response",
+                "properties": {
+                    "status": {
+                        "type": "string",
+                        "example": "ok"
+                    },
+                    "message": {
+                        "type": "string",
+                        "example": "Meal has been successfully updated"
+                    },
+                }
+            }
+        }
+    }
+}

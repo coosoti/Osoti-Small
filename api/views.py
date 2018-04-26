@@ -17,7 +17,8 @@ from .docs.docs import (
     SIGNOUT_DOCS,
     CREATE_MENU_DOCS,
     GET_MENU_DOCS,
-    MAKE_ORDER_DOCS
+    MAKE_ORDER_DOCS,
+    UPDATE_ORDER_DOCS
 )
 
 from .auth_helper import get_token, token_id
@@ -427,14 +428,45 @@ def make_order():
             response.status_code = 200
             return response
         response = jsonify({
-                'status': 'ok',
-                'message': "Order successful",
-            })
-        response.status_code = 200
+                'status': 'error',
+                'message': "Meal not in menu",
+        })
+        response.status_code = 400
         return response    
     response =  jsonify(
         status='error',
         message='No menu found' 
     )
     response.status_code = 400
-    return response    
+    return response
+
+@v1.route('/orders/<order_id>', methods=['PUT'])
+@swag_from(UPDATE_ORDER_DOCS)
+def update_order(order_id):
+    """Update an order 
+    """
+    input_data = request.get_json(force=True)
+    order = [order for order in Database.orders if order['id'] == order_id]
+
+    if order: 
+        data = {
+            'ids': input_data['ids'],
+        }
+        new_orders = [meal for meal in Database.meals if meal.get('id') in data['ids']]
+        if new_orders:
+            data = {
+               'my_orders': new_orders 
+            }
+            Database.update_order(data)
+            response = jsonify({
+                'status': 'ok',
+                'message': "The order has been successfully updated"
+            })
+            response.status_code = 202
+            return response
+    response = jsonify(
+        status='error',
+        message='This order does not exist or you do have the permission to edit it' 
+    )
+    response.status_code = 400
+    return response        
