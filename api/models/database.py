@@ -33,8 +33,12 @@ class Database(object):
     def update_meal(cls, meal_id, data):
         """This method will edit a meal option
         """
-
-        pass          
+        for key in range(0, len(cls.meals)):
+            if cls.meals[key]['id'] == meal_id:
+                # this appends existing meal id to the data
+                data['id'] = meal_id
+                cls.meals[key] = data
+                break          
 
     # Methods for menu
     @classmethod

@@ -2,7 +2,11 @@ import uuid
 from flask import Blueprint, request, jsonify
 from .models.database import Database
 from .models.meal import Meal
-from .docs.docs import CREATE_MEAL_DOCS, GET_MEALS_DOCS, GET_MEAL_DOCS
+from .docs.docs import ( 
+    CREATE_MEAL_DOCS, 
+    GET_MEALS_DOCS, GET_MEAL_DOCS, 
+    UPDATE_MEAL_DOCS
+)
 
 from .input_utils import validate, CREATE_MEAL_RULES
 
@@ -88,3 +92,44 @@ def get_meal(meal_id):
     )
     response.status_code = 400
     return response
+
+@v1.route('/meals/<meal_id>', methods=['PUT'])
+@swag_from(UPDATE_MEAL_DOCS)
+def update_meal(meal_id):
+    """Update a meal option
+    """
+    input_data = request.get_json(force=True)
+    meal = Meal.get_meal(meal_id)
+    if meal: 
+        is_valid = validate(input_data, CREATE_MEAL_RULES)
+        if is_valid != True:
+            response = jsonify(
+                status='error',
+                message='Please fill in with valid data',
+                errors=is_valid)
+            response.status_code = 400
+            return response
+        data = {
+            'title': input_data['title'],
+            'price': input_data['price'],
+        }
+
+        if Meal.meal_already_exist(input_data['title']):
+            response = jsonify(
+                status='error',
+                message='There is a meal with similar title in the database')
+            response.status_code = 400
+            return response
+        Meal.update(meal_id, data)
+        response = jsonify({
+            'status': 'ok',
+            'message': "The meal has been successfully updated"
+        })
+        response.status_code = 202
+        return response
+    response = jsonify(
+        status='error',
+        message='This meal does not exist or you do have the permission to edit it' 
+    )
+    response.status_code = 400
+    return response    
