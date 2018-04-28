@@ -7,6 +7,7 @@ from werkzeug.security import check_password_hash
 from .models.database import Database
 from .models.meal import Meal
 from .models.user import User
+from .models.menu import Menu
 from .docs.docs import (
     CREATE_MEAL_DOCS,
     DELETE_MEAL_DOCS,
@@ -52,7 +53,7 @@ def login_required(arg):
 
 
 def admin_required(arg):
-    """ Decorator to check if a user is logged in
+    """ Decorator to check if a user logged in is admin
     """
     @wraps(arg)
     def wrap(*args, **kwargs):
@@ -176,8 +177,8 @@ def logout():
 
 @v1.route('/meals', methods=['POST'])
 @swag_from(CREATE_MEAL_DOCS)
-@login_required
-@admin_required
+# @login_required
+# @admin_required
 def create_meal():
     """Create a new meal
     """
@@ -214,7 +215,7 @@ def create_meal():
 
 @v1.route('/meals', methods=['GET'])
 @swag_from(GET_MEALS_DOCS)
-@admin_required
+# @admin_required
 def get_meals():
     """This function retrieves all meals created by the caterer
     """
@@ -237,8 +238,8 @@ def get_meals():
 
 @v1.route('/meals/<meal_id>', methods=['GET'])
 @swag_from(GET_MEAL_DOCS)
-@login_required
-@admin_required
+# @login_required
+# @admin_required
 def get_meal(meal_id):
     """Retrieves meal
     """
@@ -261,8 +262,8 @@ def get_meal(meal_id):
 
 @v1.route('/meals/<meal_id>', methods=['PUT'])
 @swag_from(UPDATE_MEAL_DOCS)
-@login_required
-@admin_required
+# @login_required
+# @admin_required
 def update_meal(meal_id):
     """Update a meal
     """
@@ -303,8 +304,8 @@ def update_meal(meal_id):
 
 @v1.route('/meals/<meal_id>', methods=['DELETE'])
 @swag_from(DELETE_MEAL_DOCS)
-@login_required
-@admin_required
+# @login_required
+# @admin_required
 def delete_meal(meal_id):
     """Delete meal
     """
@@ -322,45 +323,27 @@ def delete_meal(meal_id):
     response.status_code = 400
     return response
 
-# @v1.route('/menu', methods=['POST'])
-# @swag_from(CREATE_MENU_DOCS)
-# def create_menu():
-#     """Set day's menu
-#     """
-#     meals = Meal.get_meals()
-#     if meals:
-#         date = datetime.datetime.today().strftime('%Y-%m-%d')
-#     Database.set_menu(date, meals)
-#     response = jsonify({
-#         'status': 'ok',
-#         'message': "Menu has been successfully created"
-#     })
-#     response.status_code = 201
-#     return response
-
-
 @v1.route('/menu', methods=['POST'])
 @swag_from(CREATE_MENU_DOCS)
 def create_menu():
     """Set day's menu
     """
     input_data = request.get_json(force=True)
-    ids = input_data['ids']
-    for id in ids:
-        if len(id) != 32:
-            response = jsonify({
-                'status': 'error',
-                'message': "Invalid meal id selected"
-            })
-            response.status_code = 400
-            return response
-    meals = [meal for meal in Database.meals if meal.get('id') in ids]
-    if meals:
+    selected_id = input_data['selected_id']
+    if len(selected_id) != 32:
+        response = jsonify({
+            'status': 'error',
+            'message': "Invalid meal id selected"
+        })
+        response.status_code = 400
+        return response
+    meal = [meal for meal in Database.meals if meal.get('id') == selected_id]
+    if meal:
         date = datetime.datetime.today().strftime('%Y-%m-%d')
-        Database.set_menu(date, meals)
+        Menu.set_menu(date, meal[0])
         response = jsonify({
             'status': 'ok',
-            'message': "Menu has been successfully created"
+            'message': "Meal has been successfully added to the menu"
         })
         response.status_code = 201
         return response
@@ -371,22 +354,21 @@ def create_menu():
     response.status_code = 400
     return response
 
-
 @v1.route('/menu', methods=['GET'])
 @swag_from(GET_MENU_DOCS)
 def get_menu():
     """Get day's menu
     """
-    menu = Database.menu
-    if menu:
-        date = datetime.datetime.today().strftime('%Y-%m-%d')
+    date = datetime.datetime.today().strftime('%Y-%m-%d')
+    if date in Database.menu:
+        menu_meals = Database.menu[date]       
         response = jsonify({
             'status': 'ok',
             'message': "Menu found",
             'date': date,
-            'meals': menu[date][0]
+            'meals': menu_meals
         })
-        response.status_code = 201
+        response.status_code = 200
         return response
     response = jsonify(
         status='error',
@@ -394,7 +376,6 @@ def get_menu():
     )
     response.status_code = 400
     return response
-
 
 @v1.route('/orders', methods=['POST'])
 @swag_from(MAKE_ORDER_DOCS)
@@ -451,45 +432,12 @@ def make_order():
     response.status_code = 400
     return response
 
-
-@v1.route('/orders/<order_id>', methods=['PUT'])
-@swag_from(UPDATE_ORDER_DOCS)
-def update_order(order_id):
-    """Update an order 
-    """
-    input_data = request.get_json(force=True)
-    order = [order for order in Database.orders if order['id'] == order_id]
-
-    if order:
-        data = {
-            'ids': input_data['ids'],
-        }
-        new_orders = [meal for meal in Database.meals if meal.get(
-            'id') in data['ids']]
-        if new_orders:
-            data = {
-                'my_orders': new_orders
-            }
-            Database.update_order(data)
-            response = jsonify({
-                'status': 'ok',
-                'message': "The order has been successfully updated"
-            })
-            response.status_code = 202
-            return response
-    response = jsonify(status='error',
-                       message='This order does not exist or you do have the permission to edit it')
-    response.status_code = 400
-    return response
-
-
 @v1.route('/orders', methods=['GET'])
 @swag_from(GET_ORDERS_DOCS)
 def get_orders():
     """This function retrieves all orders made by customers
     """
     orders = Database.orders
-    print(orders)
     if orders:
         response = jsonify({
             'status': 'ok',
@@ -504,3 +452,33 @@ def get_orders():
     )
     response.status_code = 204
     return response
+
+@v1.route('/orders/<order_id>', methods=['PUT'])
+@swag_from(UPDATE_ORDER_DOCS)
+def update_order(order_id):
+    """Update an order 
+    """
+    input_data = request.get_json(force=True)
+    orders = Database.orders
+    order = [order for order in orders if order.get('id') == order_id]
+    print(order)
+    print(orders)
+    if orders:
+        # ids = input_data['ids'],
+        # new_orders = [meal for meal in Database.meals if meal.get(
+        #     'id') in ids]
+        # if new_orders:
+        #     data = {
+        #         'my_orders': new_orders
+        #     }
+        #     Database.update_orders(data)
+        response = jsonify({
+            'status': 'ok',
+            'message': "The order has been successfully updated"
+        })
+        response.status_code = 202
+        return response
+    response = jsonify(status='error',
+                       message='This order does not exist')
+    response.status_code = 400
+    return response        

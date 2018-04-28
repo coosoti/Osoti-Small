@@ -6,16 +6,16 @@ CREATE_MEAL_DOCS = {
     ],
     "description": "Meal Creation",
     "parameters": [
-        {
-            "name": "Authorization",
-            "in": "header",
-            "description": "Authorization token",
-            "schema": {
-                "type": "string",
-                "format": "uuid",
-            },
-            "required": True,
-        },
+        # {
+        #     "name": "Authorization",
+        #     "in": "header",
+        #     "description": "Authorization token",
+        #     "schema": {
+        #         "type": "string",
+        #         "format": "uuid",
+        #     },
+        #     "required": True,
+        # },
         {
             "name": "body",
             "in": "body",
@@ -65,18 +65,18 @@ GET_MEALS_DOCS = {
         "Meal"
     ],
     "description": "Get a list of meals created by authenticated caterer",
-    "parameters": [
-        {
-            "name": "Authorization",
-            "in": "header",
-            "description": "Authorization token",
-            "schema": {
-                "type": "string",
-                "format": "uuid",
-            },
-            "required": True,
-        }
-    ],
+    # "parameters": [
+    #     {
+    #         "name": "Authorization",
+    #         "in": "header",
+    #         "description": "Authorization token",
+    #         "schema": {
+    #             "type": "string",
+    #             "format": "uuid",
+    #         },
+    #         "required": True,
+    #     }
+    # ],
     "responses": {
         "200": {
             "description": "Return response status and message and a list of posts by the user",
@@ -122,16 +122,16 @@ GET_MEAL_DOCS = {
     ],
     "description": "Get meal details",
     "parameters": [
-        {
-            "name": "meal_id",
-            "in": "path",
-            "description": "meal id",
-            "schema": {
-                "type": "string",
-                "format": "uuid",
-            },
-            "required": True,
-        },
+        # {
+        #     "name": "meal_id",
+        #     "in": "path",
+        #     "description": "meal id",
+        #     "schema": {
+        #         "type": "string",
+        #         "format": "uuid",
+        #     },
+        #     "required": True,
+        # },
         {
             "name": "Authorization",
             "in": "header",
@@ -188,16 +188,16 @@ UPDATE_MEAL_DOCS = {
     ],
     "description": "Update meal details by the authenticated caterer",
     "parameters": [
-        {
-            "name": "Authorization",
-            "in": "header",
-            "description": "Authorization token",
-            "schema": {
-                "type": "string",
-                "format": "uuid",
-            },
-            "required": True,
-        },
+        # {
+        #     "name": "Authorization",
+        #     "in": "header",
+        #     "description": "Authorization token",
+        #     "schema": {
+        #         "type": "string",
+        #         "format": "uuid",
+        #     },
+        #     "required": True,
+        # },
         {
             "name": "meal_id",
             "in": "path",
@@ -255,16 +255,16 @@ DELETE_MEAL_DOCS = {
     ],
     "description": "Meal can only be deleted by authenticated caterer",
     "parameters": [
-        {
-            "name": "Authorization",
-            "in": "header",
-            "description": "Authorization token",
-            "schema": {
-                "type": "string",
-                "format": "uuid",
-            },
-            "required": True,
-        },
+        # {
+        #     "name": "Authorization",
+        #     "in": "header",
+        #     "description": "Authorization token",
+        #     "schema": {
+        #         "type": "string",
+        #         "format": "uuid",
+        #     },
+        #     "required": True,
+        # },
         {
             "name": "meal_id",
             "in": "path",
@@ -475,13 +475,12 @@ CREATE_MENU_DOCS = {
             "schema": {
                 "id": "menu_set",
                 "required": [
-                    "ids"
+                    "selected_id"
                 ],
                 "properties": {
-                    "ids": {
+                    "selected_id": {
                         "type": "uuid",
-                        "example": ["a69de3743ae24ac89dc3dc2e54c91b3b",
-                                    "a69de3743ae24ac89dc3dc2e54c91b3b"]
+                        "example": "a69de3743ae24ac89dc3dc2e54c91b3b"
                     },
                 }
             }

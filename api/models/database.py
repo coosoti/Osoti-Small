@@ -59,11 +59,12 @@ class Database(object):
 
     # Methods for menu
     @classmethod
-    def save_menu(cls, meal_id):
-        """This method appends meal to the menu list
+    def save_menu(cls, date, data):
+        """Save menu method
         """
-
-        pass
+        if not date in cls.menu:
+            cls.menu[date] = []
+        cls.menu[date].append(data)
 
     # Methods for orders
     @classmethod
@@ -73,7 +74,7 @@ class Database(object):
         cls.orders.append(data)
 
     @classmethod
-    def update_order(cls, order_id):
+    def update_orders(cls, order_id):
         """This method will edit user's order from the orders list
         """
         for key in range(0, len(cls.orders)):
@@ -83,10 +84,4 @@ class Database(object):
                 cls.orders[key] = data
                 break
 
-    @classmethod
-    def set_menu(cls, date, data):
-        """Set menu method
-        """
-        if not date in cls.menu:
-            cls.menu[date] = []
-        cls.menu[date].append(data)
+
