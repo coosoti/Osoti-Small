@@ -151,7 +151,7 @@ def login():
             return response
         response = jsonify({
             'status': 'error',
-            'message': 'Invalid password'
+            'message': 'Please provide valid password'
         })
         response.status_code = 401
         return response
