@@ -39,9 +39,16 @@ class MainTests(unittest.TestCase):
             'password': 'kulundeng',
             'confirm_password': 'kulundeng'
         }
-        self.orders_data = {
+        self.orders = {
             'date': '2018-4-25',
-            'meals': []
+            'id': uuid.uuid4().hex,
+            'my_order': [
+                {
+                    'id': uuid.uuid4().hex,
+                    'title': 'Beef with rice',
+                    'price': '600.00'
+                }
+            ]
         }
 
         test_user = User()

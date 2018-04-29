@@ -8,6 +8,7 @@ from .models.database import Database
 from .models.meal import Meal
 from .models.user import User
 from .models.menu import Menu
+from .models.orders import Order
 from .docs.docs import (
     CREATE_MEAL_DOCS,
     DELETE_MEAL_DOCS,
@@ -20,7 +21,8 @@ from .docs.docs import (
     GET_MENU_DOCS,
     MAKE_ORDER_DOCS,
     UPDATE_ORDER_DOCS,
-    GET_ORDERS_DOCS
+    GET_ORDERS_DOCS,
+    GET_ORDER_DOCS
 )
 
 from .auth_helper import get_token, token_id
@@ -377,61 +379,6 @@ def get_menu():
     response.status_code = 400
     return response
 
-@v1.route('/orders', methods=['POST'])
-@swag_from(MAKE_ORDER_DOCS)
-def make_order():
-    """Make an order
-    """
-    date = datetime.datetime.today().strftime('%Y-%m-%d')
-    today_menu = Database.menu
-    if not bool(today_menu):
-        response = jsonify({
-            'status': 'error',
-            'message': 'The menu has not been set.'
-        })
-        response.status_code = 400
-        return response
-    menu_meals = Database.menu[date][0]
-    input_data = request.get_json(force=True)
-    ids = input_data['ids']
-    for id in ids:
-        if len(id) != 32:
-            response = jsonify({
-                'status': 'error',
-                'message': "Invalid meal id selected"
-            })
-            response.status_code = 400
-            return response
-    if menu_meals:
-        my_orders = [meal for meal in menu_meals if meal.get('id') in ids]
-
-        if len(my_orders) > 0:
-            data = {
-                'id': uuid.uuid4().hex,
-                'date': datetime.datetime.today().strftime('%Y-%m-%d'),
-                'time': strftime("%H:%M:%S"),
-                'my_orders': my_orders
-            }
-            Database.save_order(data)
-            response = jsonify({
-                'status': 'ok',
-                'message': "Order successful",
-            })
-            response.status_code = 200
-            return response
-        response = jsonify({
-            'status': 'error',
-            'message': "Meal not in menu",
-        })
-        response.status_code = 400
-        return response
-    response = jsonify(
-        status='error',
-        message='No menu found'
-    )
-    response.status_code = 400
-    return response
-
 @v1.route('/orders', methods=['GET'])
 @swag_from(GET_ORDERS_DOCS)
 def get_orders():
@@ -459,26 +406,102 @@ def update_order(order_id):
     """Update an order 
     """
     input_data = request.get_json(force=True)
-    orders = Database.orders
-    order = [order for order in orders if order.get('id') == order_id]
-    print(order)
-    print(orders)
-    if orders:
-        # ids = input_data['ids'],
-        # new_orders = [meal for meal in Database.meals if meal.get(
-        #     'id') in ids]
-        # if new_orders:
-        #     data = {
-        #         'my_orders': new_orders
-        #     }
-        #     Database.update_orders(data)
+    if order_id in [order['id'] for order in Database.orders]:
+        order = Order.get_order(order_id)
+        selected_id = input_data['selected_id']
+        date = datetime.datetime.today().strftime('%Y-%m-%d')
+        new_order = [meal for meal in Database.menu[date] if meal.get('id') == selected_id]
+        print(new_order[0])
+        if new_order:
+            data = {
+                'id': order['id'],
+                'date': order['date'],
+                'time_created': order['time'],
+                'time_modified': strftime("%H:%M:%S"),
+                'my_order': new_order[0]
+            }
+            Order.update(order_id, data)    
+            response = jsonify({
+                'status': 'ok',
+                'message': "The order has been successfully updated"
+            })
+            response.status_code = 202
+            return response
+        response = jsonify({
+                'status': 'error',
+                'message': "The meal you ordered is not in the menu"
+        })
+        response.status_code = 400
+        return response    
+    response = jsonify(status='error',
+                       message='This order does not exist')
+    response.status_code = 400
+    return response 
+
+@v1.route('/orders/<order_id>', methods=['GET'])
+@swag_from(GET_ORDER_DOCS)
+def get_order(order_id):
+    """get order details 
+    """
+    # order = [order for order in Database.orders if order.get('id') == order_id]
+    if order_id in [order['id'] for order in Database.orders]:
+        order = Order.get_order(order_id)         
         response = jsonify({
             'status': 'ok',
-            'message': "The order has been successfully updated"
+            'message': "The order has been found",
+            'order': order
         })
-        response.status_code = 202
+        response.status_code = 200
         return response
     response = jsonify(status='error',
                        message='This order does not exist')
     response.status_code = 400
-    return response        
+    return response 
+
+@v1.route('/orders', methods=['POST'])
+@swag_from(MAKE_ORDER_DOCS)
+def make_order():
+    """Make an order
+    """
+    input_data = request.get_json(force=True)
+    selected_id = input_data['selected_id']
+    if len(selected_id) != 32:
+        response = jsonify({
+            'status': 'error',
+            'message': "Invalid meal id selected"
+        })
+        response.status_code = 400
+        return response
+    date = datetime.datetime.today().strftime('%Y-%m-%d')    
+    menu_meals = Database.menu[date]
+    if len(menu_meals) == 0:
+        response = jsonify({
+            'status': 'error',
+            'message': 'The menu has not been set.'
+        })
+        response.status_code = 400
+        return response
+
+    my_order = [meal for meal in menu_meals if meal.get('id') == selected_id]
+    if my_order:
+        data = {
+            'id': uuid.uuid4().hex,
+            'date': datetime.datetime.today().strftime('%Y-%m-%d'),
+            'time': strftime("%H:%M:%S"),
+            'my_order': my_order[0]
+        }
+        Order.add_order(data)
+        response = jsonify({
+            'status': 'ok',
+            'message': "Order created successfully",
+        })
+        response.status_code = 201
+        return response
+    response = jsonify({
+            'status': 'ok',
+            'message': "No meal with that id",
+    })
+    response.status_code = 400
+    return response              
+   
+        
