@@ -81,7 +81,7 @@ def register():
     """This functions enables user registration
     """
     is_valid = validate(request.get_json(force=True), USER_SIGNUP_RULES)
-    input_data = request.get_json(force=True)
+    input_data = request.get_json()
     if is_valid != True:
         response = jsonify(
             status='error',
@@ -480,7 +480,16 @@ def make_order():
         response.status_code = 400
         return response
     date = datetime.datetime.today().strftime('%Y-%m-%d')
-    menu_meals = Database.menu[date]
+    try:
+        menu_meals = Database.menu[date]
+    except KeyError:
+        response = jsonify({
+            'status': 'error',
+            'message': 'The menu has not been set.'
+        })
+        response.status_code = 400
+        return response 
+    
     if len(menu_meals) == 0:
         response = jsonify({
             'status': 'error',
@@ -510,3 +519,29 @@ def make_order():
     })
     response.status_code = 400
     return response
+
+
+@v1.errorhandler(400)
+def bad_request(error):
+    '''error handler for Bad request'''
+    return jsonify(dict(error = 'Bad request')), 400
+
+
+
+@v1.errorhandler(404)
+def page_not_found(error):
+    """error handler for 404
+    """
+    return jsonify(dict(error = 'Page not found')), 404
+
+@v1.errorhandler(405)
+def unauthorized(error):
+    """error handler for 405
+    """
+    return jsonify(dict(error = 'Method not allowed')), 405
+
+@v1.errorhandler(500)
+def internal_server_error(error):
+    """error handler for 500
+    """
+    return jsonify(dict(error = 'Internal server error')), 500    
