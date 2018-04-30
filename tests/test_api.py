@@ -6,7 +6,9 @@ import unittest
 from api.auth_helper import get_token
 from api.models.meal import Meal
 from api.models.user import User
-from api import app
+from api import create_app
+
+app = create_app(config_name='testing')
 
 
 class MainTests(unittest.TestCase):
@@ -17,6 +19,7 @@ class MainTests(unittest.TestCase):
         """Setting up test data
 
         """
+        # self.app = create_app(config_name='testing')
         self.app = app.test_client()
         self.app.testing = True
 
