@@ -85,4 +85,5 @@ class MealTests(MainTests):
                                 headers={'Authorization': self.test_token})
         self.assertEqual(response.status_code, 202)
         self.assertIn(b'The meal has been successfully updated', response.data)
-        
+
+

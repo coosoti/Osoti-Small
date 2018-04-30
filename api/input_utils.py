@@ -5,7 +5,7 @@ from .validators import Validation
 # Create meal validation rules
 
 CREATE_MEAL_RULES = [
-# Assuming food with minimal characters in title is three  e.g tea
+    # Assuming food with minimal characters in title is three  e.g tea
     {'title': [('minimum', 3), ('required', True)]},
     {'price': [('float', True), ('required', True)]},
 ]

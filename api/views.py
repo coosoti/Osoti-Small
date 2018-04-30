@@ -325,7 +325,6 @@ def delete_meal(meal_id):
     response.status_code = 400
     return response
 
-
 @v1.route('/menu', methods=['POST'])
 @swag_from(CREATE_MENU_DOCS)
 def create_menu():
@@ -357,7 +356,6 @@ def create_menu():
     response.status_code = 400
     return response
 
-
 @v1.route('/menu', methods=['GET'])
 @swag_from(GET_MENU_DOCS)
 def get_menu():
@@ -365,7 +363,7 @@ def get_menu():
     """
     date = datetime.datetime.today().strftime('%Y-%m-%d')
     if date in Database.menu:
-        menu_meals = Database.menu[date]
+        menu_meals = Database.menu[date]       
         response = jsonify({
             'status': 'ok',
             'message': "Menu found",
@@ -380,7 +378,6 @@ def get_menu():
     )
     response.status_code = 400
     return response
-
 
 @v1.route('/orders', methods=['GET'])
 @swag_from(GET_ORDERS_DOCS)
@@ -403,7 +400,6 @@ def get_orders():
     response.status_code = 204
     return response
 
-
 @v1.route('/orders/<order_id>', methods=['PUT'])
 @swag_from(UPDATE_ORDER_DOCS)
 def update_order(order_id):
@@ -414,8 +410,7 @@ def update_order(order_id):
         order = Order.get_order(order_id)
         selected_id = input_data['selected_id']
         date = datetime.datetime.today().strftime('%Y-%m-%d')
-        new_order = [meal for meal in Database.menu[date]
-                     if meal.get('id') == selected_id]
+        new_order = [meal for meal in Database.menu[date] if meal.get('id') == selected_id]
         print(new_order[0])
         if new_order:
             data = {
@@ -425,7 +420,7 @@ def update_order(order_id):
                 'time_modified': strftime("%H:%M:%S"),
                 'my_order': new_order[0]
             }
-            Order.update(order_id, data)
+            Order.update(order_id, data)    
             response = jsonify({
                 'status': 'ok',
                 'message': "The order has been successfully updated"
@@ -433,16 +428,15 @@ def update_order(order_id):
             response.status_code = 202
             return response
         response = jsonify({
-            'status': 'error',
-            'message': "The meal you ordered is not in the menu"
+                'status': 'error',
+                'message': "The meal you ordered is not in the menu"
         })
         response.status_code = 400
-        return response
+        return response    
     response = jsonify(status='error',
                        message='This order does not exist')
     response.status_code = 400
-    return response
-
+    return response 
 
 @v1.route('/orders/<order_id>', methods=['GET'])
 @swag_from(GET_ORDER_DOCS)
@@ -451,7 +445,7 @@ def get_order(order_id):
     """
     # order = [order for order in Database.orders if order.get('id') == order_id]
     if order_id in [order['id'] for order in Database.orders]:
-        order = Order.get_order(order_id)
+        order = Order.get_order(order_id)         
         response = jsonify({
             'status': 'ok',
             'message': "The order has been found",
@@ -462,8 +456,7 @@ def get_order(order_id):
     response = jsonify(status='error',
                        message='This order does not exist')
     response.status_code = 400
-    return response
-
+    return response 
 
 @v1.route('/orders', methods=['POST'])
 @swag_from(MAKE_ORDER_DOCS)
@@ -479,7 +472,7 @@ def make_order():
         })
         response.status_code = 400
         return response
-    date = datetime.datetime.today().strftime('%Y-%m-%d')
+    date = datetime.datetime.today().strftime('%Y-%m-%d')    
     menu_meals = Database.menu[date]
     if len(menu_meals) == 0:
         response = jsonify({
@@ -505,8 +498,10 @@ def make_order():
         response.status_code = 201
         return response
     response = jsonify({
-        'status': 'ok',
-        'message': "No meal with that id",
+            'status': 'ok',
+            'message': "No meal with that id",
     })
     response.status_code = 400
-    return response
+    return response              
+   
+        
