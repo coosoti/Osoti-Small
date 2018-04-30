@@ -9,6 +9,7 @@ from api import create_app
 config_name = os.getenv('MODE')
 app = create_app(config_name)
 
+
 SWAGGER_CONFIG = {
     "headers": [],
     "title": "Book-A-Meal",
@@ -47,8 +48,8 @@ TEMPLATE = {
 }
 
 
-SWAGGER = Swagger(app, config=SWAGGER_CONFIG, template=TEMPLATE)
+SWAGGER = Swagger(app, config=SWAGGER_CONFIG, template=TEMPLATE) 
 
 
 if __name__ == '__main__':
-    app.run()
+    app.run()   
