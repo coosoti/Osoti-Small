@@ -671,16 +671,12 @@ UPDATE_ORDER_DOCS = {
             "schema": {
                 "id": "update_order_data",
                 "required": [
-                    "ids",
+                    "selected_id",
                 ],
                 "properties": {
-                    "ids": {
+                    "selected_id": {
                         "type": "string",
-                        "example": [
-                            "a69de3743ae24ac89dc3dc2e54c91b3b",
-                            "a69de3743ae24ac89dc3dc2e54c91b3b"
-
-                        ]
+                        "example": "a69de3743ae24ac89dc3dc2e54c91b3b"
                     },
 
                 }
@@ -724,6 +720,69 @@ GET_ORDERS_DOCS = {
     #         "required": True,
     #     }
     # ],
+    "responses": {
+        "200": {
+            "description": "Return response status and message and a list of posts by the user",
+            "schema": {
+                "id": "get_meals_response",
+                "properties": {
+                    "status": {
+                        "type": "string",
+                        "example": "ok"
+                    },
+                    "message": {
+                        "type": "string",
+                        "example": "You have 1 meal"
+                    },
+                    "meals": {
+                        "type": "array",
+                        "items": {
+                            "properties": {
+                                "id": {
+                                    "type": "string",
+                                    "example": "a69de3743ae24ac89dc3dc2e54c91b3b"
+                                },
+                                "title": {
+                                    "type": "string",
+                                    "example": "Beef with chicken"
+                                },
+                                "price": {
+                                    "type": "float",
+                                    "example": "600.00"
+                                },
+                            }
+                        }
+                    },
+                }
+            },
+        }
+    }
+}
+
+GET_ORDER_DOCS = {
+    "tags": [
+        "Order"
+    ],
+    "description": "Get order made by authenticated customers",
+    "parameters": [
+    #     {
+    #         "name": "Authorization",
+    #         "in": "header",
+    #         "description": "Authorization token",
+    #         "schema": {
+    #             "type": "string",
+    #             "format": "uuid",
+    #         },
+    #         "required": True,
+    #     }
+        {
+            "name": "order_id",
+            "in": "path",
+            "description": "order id",
+            "type": "string",
+            "required": True,
+        }
+    ],
     "responses": {
         "200": {
             "description": "Return response status and message and a list of posts by the user",

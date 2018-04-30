@@ -74,7 +74,7 @@ class Database(object):
         cls.orders.append(data)
 
     @classmethod
-    def update_orders(cls, order_id):
+    def update_orders(cls, order_id, data):
         """This method will edit user's order from the orders list
         """
         for key in range(0, len(cls.orders)):

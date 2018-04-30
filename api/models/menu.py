@@ -9,6 +9,7 @@ class Menu():
 	def __init__(self):
 		"""Initializes this class
 		"""
+		pass
 		
 	@classmethod
 	def set_menu(cls, date, data):
