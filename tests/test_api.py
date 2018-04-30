@@ -61,7 +61,6 @@ class MainTests(unittest.TestCase):
             'password': self.user_data['password'],
             'confirm_password': self.user_data['confirm_password']
         })
-
         Meal.save(self.meal_data)
         with app.test_request_context():
             orphan_id = uuid.uuid4().hex
