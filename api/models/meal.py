@@ -17,35 +17,40 @@ class Meal(object):
     def save(cls, data):
         """Saves meal option to the meals database
         """
-        pass
+        Database.save_meal(data)
 
     @classmethod
     def delete(cls, meal_id):
         """Deletes meal from the database
         """
-
-        pass
+        Database.delete_meal(meal_id)
 
     @classmethod
     def update(cls, meal_id, data):
         """Edits meal option
         """
-        pass
+        Database.update_meal(meal_id, data)
 
     @classmethod
     def get_meals(cls):
         """Gets Meal Details
         """
-        pass
-            
+        meals = [meal for meal in Database.meals]
+        return meals
+
     @classmethod
     def get_meal(cls, meal_id):
         """Gets Meal Details
         """
-        pass               
+        for meal in Database.meals:
+            if meal['id'] == meal_id:
+                return meal
 
     @classmethod
     def meal_already_exist(cls, meal_title):
         """Check if the meal to be added or updated already exists
         """
-        pass   
+        for meal in Database.meals:
+            if (meal['title'].lower() == meal_title.lower()):
+                return True
+        return False
