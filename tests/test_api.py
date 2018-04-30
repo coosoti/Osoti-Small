@@ -17,9 +17,7 @@ class MainTests(unittest.TestCase):
 
     def setUp(self):
         """Setting up test data
-
         """
-        # self.app = create_app(config_name='testing')
         self.app = app.test_client()
         self.app.testing = True
 
@@ -75,7 +73,6 @@ class MainTests(unittest.TestCase):
                 'password': self.user_data['password'],
                 'confirm_password': self.user_data['confirm_password']
             })
-            # Store test token in auth storage auth_token list
             token = get_token(self.user_data['id'])
             other_signature_token = get_token(
                 self.user_data['id'], 3600, 'other_signature')
