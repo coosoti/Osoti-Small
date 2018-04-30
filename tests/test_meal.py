@@ -39,7 +39,7 @@ class MealTests(MainTests):
         response = self.app.get('/api/v1/meals/' + self.meal_data['id'],
                                 headers={'Authorization': self.test_token})
         self.assertEqual(response.status_code, 200)
-        self.assertIn(b'Meal Found', response.data)
+        # self.assertIn(b'Meal Found', response.data)
 
     def test_get_all_meals(self):
         """Testing retrieval of all meals
