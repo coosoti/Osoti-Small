@@ -76,3 +76,26 @@ def get_meals():
     )
     response.status_code = 204
     return response    
+
+@v2.route('/meals/<meal_id>', methods=['GET'])
+@swag_from(GET_MEAL_DOCS)
+# @login_required
+# @admin_required
+def get_meal(meal_id):
+    """Retrieves meal
+    """
+    meal = Meal.query.filter_by(id=meal_id).first()
+    if meal:
+        response = jsonify({
+            'id': meal.id,
+            'title': meal.title,
+            'price': meal.price
+        })
+        response.status_code = 200
+        return response
+    response = jsonify(
+        status='error',
+        message='No meal with that id'
+    )
+    response.status_code = 400
+    return response
