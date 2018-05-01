@@ -7,6 +7,7 @@ from .docs.docs import (
     CREATE_MEAL_DOCS, GET_MEALS_DOCS, GET_MEAL_DOCS)
 
 from flasgger.utils import swag_from
+import psycopg2
 
 
 v2 = Blueprint('v2', __name__, url_prefix='/api/v2')
@@ -84,7 +85,10 @@ def get_meals():
 def get_meal(meal_id):
     """Retrieves meal
     """
-    meal = Meal.query.filter_by(id=meal_id).first()
+    try:
+        meal = Meal.query.filter_by(id=meal_id).first()
+    except psycopg2.DataError:
+        abort(400)    
     if meal:
         response = jsonify({
             'id': meal.id,
@@ -99,3 +103,29 @@ def get_meal(meal_id):
     )
     response.status_code = 400
     return response
+
+@v2.errorhandler(400)
+def bad_request(error):
+    '''error handler for Bad request'''
+    return jsonify(dict(error='Bad request')), 400
+
+
+@v2.errorhandler(404)
+def page_not_found(error):
+    """error handler for 404
+    """
+    return jsonify(dict(error='Page not found')), 404
+
+
+@v2.errorhandler(405)
+def unauthorized(error):
+    """error handler for 405
+    """
+    return jsonify(dict(error='Method not allowed')), 405
+
+
+@v2.errorhandler(500)
+def internal_server_error(error):
+    """error handler for 500
+    """
+    return jsonify(dict(error='Internal server error')), 500    
