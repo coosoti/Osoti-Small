@@ -1,10 +1,10 @@
 from flask import Blueprint, request, jsonify
 
-from .v2_models.meal import Meal
+from .v2_models.meal import Meal, db
 
 from .input_utils import (validate, CREATE_MEAL_RULES)
 from .docs.docs import (
-    CREATE_MEAL_DOCS, GET_MEALS_DOCS, GET_MEAL_DOCS)
+    CREATE_MEAL_DOCS, GET_MEALS_DOCS, GET_MEAL_DOCS, UPDATE_MEAL_DOCS)
 
 from flasgger.utils import swag_from
 import psycopg2
@@ -26,10 +26,7 @@ def create_meal():
             errors=is_valid)
         response.status_code = 400
         return response
-    data = {
-        'title': input_data['title'],
-        'price': input_data['price'],
-    }
+
     new_meal= Meal(title=input_data['title'], price=input_data['price'])
 
     if Meal.meal_already_exist(title=input_data['title']):
@@ -85,10 +82,8 @@ def get_meals():
 def get_meal(meal_id):
     """Retrieves meal
     """
-    try:
-        meal = Meal.query.filter_by(id=meal_id).first()
-    except psycopg2.DataError:
-        abort(400)    
+    meal = Meal.query.filter_by(id=meal_id).first()
+ 
     if meal:
         response = jsonify({
             'id': meal.id,
@@ -101,6 +96,45 @@ def get_meal(meal_id):
         status='error',
         message='No meal with that id'
     )
+    response.status_code = 400
+    return response
+
+
+@v2.route('/meals/<meal_id>', methods=['PUT'])
+@swag_from(UPDATE_MEAL_DOCS)
+# @login_required
+# @admin_required
+def update_meal(meal_id):
+    """Update a meal
+    """
+    input_data = request.get_json(force=True)
+    meal = Meal.query.filter_by(id=meal_id).first()
+    if meal:
+        is_valid = validate(input_data, CREATE_MEAL_RULES)
+        if is_valid != True:
+            response = jsonify(
+                status='error',
+                message='Please fill in with valid data',
+                errors=is_valid)
+            response.status_code = 400
+            return response
+        meal.title= input_data['title'],
+        meal.price = input_data['price']
+        # if Meal.meal_already_exist(input_data['title']):
+        #     response = jsonify(
+        #         status='error',
+        #         message='There is a meal with similar title in the database')
+        #     response.status_code = 400
+        #     return response
+        db.session.commit()
+        response = jsonify({
+            'status': 'ok',
+            'message': "The meal has been successfully updated"
+        })
+        response.status_code = 202
+        return response
+    response = jsonify(status='error',
+                       message='This meal does not exist or you do have the permission to edit it')
     response.status_code = 400
     return response
 
