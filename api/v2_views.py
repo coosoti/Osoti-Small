@@ -4,7 +4,7 @@ from .v2_models.meal import Meal, db
 
 from .input_utils import (validate, CREATE_MEAL_RULES)
 from .docs.docs import (
-    CREATE_MEAL_DOCS, GET_MEALS_DOCS, GET_MEAL_DOCS, UPDATE_MEAL_DOCS)
+    CREATE_MEAL_DOCS, GET_MEALS_DOCS, GET_MEAL_DOCS, UPDATE_MEAL_DOCS, DELETE_MEAL_DOCS)
 
 from flasgger.utils import swag_from
 import psycopg2
@@ -137,6 +137,28 @@ def update_meal(meal_id):
                        message='This meal does not exist or you do have the permission to edit it')
     response.status_code = 400
     return response
+
+
+@v2.route('/meals/<meal_id>', methods=['DELETE'])
+@swag_from(DELETE_MEAL_DOCS)
+# @login_required
+# @admin_required
+def delete_meal(meal_id):
+    """Delete meal
+    """
+    meal = Meal.query.filter_by(id=meal_id).first()
+    if meal:
+        Meal.delete(meal)
+        response = jsonify({
+            'status': 'ok',
+            'message': "Meal has been successfully deleted"
+        })
+        response.status_code = 202
+        return response
+    response = jsonify(status='error',
+                       message="This meal does not exist or you do not have the permission to delete it")
+    response.status_code = 400
+    return response    
 
 @v2.errorhandler(400)
 def bad_request(error):
