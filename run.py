@@ -18,14 +18,16 @@ SWAGGER_CONFIG = {
             "version": "1.0",
             "title": "API Version 1",
             "endpoint": 'apispecs',
-            "route": '/api/v1/docs.json',
+            # "route": '/api/v1/docs.json',
+            "route": '/api/v2/docs.json',
             "rule_filter": lambda rule: True,
             "model_filter": lambda rule: True,
         }
     ],
     "static_url_path": "/swagger_files",
     "swagger_ui": True,
-    "specs_route": "/api/v1"
+    # "specs_route": "/api/v1",
+    "specs_route": "/api/v2"
 }
 TEMPLATE = {
     "swagger": "2.0",
