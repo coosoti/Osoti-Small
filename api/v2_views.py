@@ -4,7 +4,7 @@ from .v2_models.meal import Meal
 
 from .input_utils import (validate, CREATE_MEAL_RULES)
 from .docs.docs import (
-    CREATE_MEAL_DOCS)
+    CREATE_MEAL_DOCS, GET_MEALS_DOCS, GET_MEAL_DOCS)
 
 from flasgger.utils import swag_from
 
@@ -45,3 +45,34 @@ def create_meal():
     })
     response.status_code = 201
     return response
+
+
+@v2.route('/meals', methods=['GET'])
+@swag_from(GET_MEALS_DOCS)
+# @admin_required
+def get_meals():
+    """This function retrieves all meals created by the caterer
+    """
+    data = Meal.get_all()
+    meals = []
+    if data:       
+        for meal in data:
+            obj = {
+                'id': meal.id,
+                'title': meal.title,
+                'price': meal.price
+            }
+            meals.append(obj)   
+        response = jsonify({
+            'status': 'ok',
+            'message': 'There are ' + str(len(meals)) + ' meals',
+            'meals': meals
+        })
+        response.status_code = 200
+        return response
+    response = jsonify(
+        status='error',
+        message='The are no meals'
+    )
+    response.status_code = 204
+    return response    
