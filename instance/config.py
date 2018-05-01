@@ -7,8 +7,9 @@ class Config(object):
     DEBUG = False
     CSRF_ENABLED = True
     SECRET_KEY = os.getenv('SECRET_KEY')
-    SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL')
-
+    basedir = os.path.abspath(os.path.dirname(__file__))
+    # SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL')
+    SQLALCHEMY_DATABASE_URI ="postgresql://postgres:28201903@localhost:5432/bam"
 
 class DevelopmentConfig(Config):
     """Configurations for Development.
