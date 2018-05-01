@@ -42,7 +42,7 @@ class Validation:
     def float(self, key, float):
         """Check if the input given is a float"""
         if key in self.all and self.all[key] is not None:
-            if re.match(r"^[0-9]*\.[0-9][0-9]$", self.all[key]): #^[0-9]*\.[0-9][0-9]$
+            if re.match(r"^[0-9]*\.[0-9][0-9]$", self.all[key]):
                 return True
             return key + " should be a type float e.g 450.00"
         return True

@@ -12,6 +12,7 @@ from api.models.database import Database
 class MenuTests(MainTests):
     """Main Test
     """
+
     def test_set_up_menu(self):
         """Test set today's menu 
         """
@@ -20,7 +21,8 @@ class MenuTests(MainTests):
             'selected_id': self.menu_meal_data['id']
         }))
         self.assertEqual(response.status_code, 201)
-        self.assertIn(b'Meal has been successfully added to the menu', response.data)
+        self.assertIn(
+            b'Meal has been successfully added to the menu', response.data)
 
     def test_set_up_menu_with_invalid_meal_id(self):
         """Test add meal to today's menu with invalid meal id 
@@ -41,4 +43,3 @@ class MenuTests(MainTests):
         }))
         self.assertEqual(response.status_code, 400)
         self.assertIn(b'Meal selected not found', response.data)
-        

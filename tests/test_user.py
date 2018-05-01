@@ -84,7 +84,6 @@ class UserTests(MainTests):
             b'password should not be less than 8 characters', response.data)
         self.assertIn(b'designation is required', response.data)
 
-   
     def test_invalid_password(self):
         """Test invalid password for a registered email
         """
@@ -102,7 +101,8 @@ class UserTests(MainTests):
             'email': 'osoticharles@bam.com',
         }), content_type='application/json')
         self.assertEqual(response.status_code, 400)
-        self.assertIn(b'Please provide corrent email or password', response.data)
+        self.assertIn(
+            b'Please provide corrent email or password', response.data)
 
     def test_is_required_and_max_user_input_validatation(self):
         """Test is_required_and max length of user input
@@ -127,5 +127,4 @@ class UserTests(MainTests):
             'confirm_password': 'fjhjgjhdjkjnk'
         }), content_type='application/json')
         self.assertEqual(response.status_code, 400)
-        self.assertIn(b"don't match", response.data)    
-                
+        self.assertIn(b"don't match", response.data)

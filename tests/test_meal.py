@@ -6,7 +6,7 @@ from flask import json
 from tests.test_api import MainTests
 from api.auth_helper import get_token
 from api.models.meal import Meal
-from api.models.database import Database 
+from api.models.database import Database
 
 
 class MealTests(MainTests):
@@ -23,7 +23,6 @@ class MealTests(MainTests):
         }), headers={'Authorization': self.test_token})
         self.assertEqual(response.status_code, 201)
         self.assertIn(b'Meal has been successfully created', response.data)
-        
 
     def test_get_all_meals(self):
         """Testing retrieval of all meals
@@ -41,7 +40,6 @@ class MealTests(MainTests):
                                 headers={'Authorization': self.test_token})
         self.assertEqual(response.status_code, 200)
         self.assertIn(b'Meal Found', response.data)
-
 
     def test_duplicate_attempts(self):
         """Testing attempt to create a duplicate meal
@@ -65,7 +63,6 @@ class MealTests(MainTests):
         self.assertEqual(response.status_code, 400)
         self.assertIn(b'Please fill in with valid data', response.data)
 
-
     def test_delete_meal(self):
         """Testing delete function
         """
@@ -74,7 +71,6 @@ class MealTests(MainTests):
                                    data={}, headers={'Authorization': self.test_token})
         self.assertEqual(response.status_code, 202)
         self.assertIn(b'Meal has been successfully deleted', response.data)
-
 
     def test_update_meal(self):
         """Testing meal update function

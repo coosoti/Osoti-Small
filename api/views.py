@@ -488,8 +488,8 @@ def make_order():
             'message': 'The menu has not been set.'
         })
         response.status_code = 400
-        return response 
-    
+        return response
+
     if len(menu_meals) == 0:
         response = jsonify({
             'status': 'error',
@@ -524,24 +524,25 @@ def make_order():
 @v1.errorhandler(400)
 def bad_request(error):
     '''error handler for Bad request'''
-    return jsonify(dict(error = 'Bad request')), 400
-
+    return jsonify(dict(error='Bad request')), 400
 
 
 @v1.errorhandler(404)
 def page_not_found(error):
     """error handler for 404
     """
-    return jsonify(dict(error = 'Page not found')), 404
+    return jsonify(dict(error='Page not found')), 404
+
 
 @v1.errorhandler(405)
 def unauthorized(error):
     """error handler for 405
     """
-    return jsonify(dict(error = 'Method not allowed')), 405
+    return jsonify(dict(error='Method not allowed')), 405
+
 
 @v1.errorhandler(500)
 def internal_server_error(error):
     """error handler for 500
     """
-    return jsonify(dict(error = 'Internal server error')), 500    
+    return jsonify(dict(error='Internal server error')), 500
