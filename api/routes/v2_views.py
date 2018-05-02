@@ -1,20 +1,23 @@
+import datetime
 from flask import Blueprint, request, jsonify
 
-from .v2_models.meal import Meal, db
+from ..v2_models.meal import Meal, db, Menu
 
-from .input_utils import (validate, CREATE_MEAL_RULES)
-from .docs.docs import (
-    CREATE_MEAL_DOCS, GET_MEALS_DOCS, GET_MEAL_DOCS, UPDATE_MEAL_DOCS, DELETE_MEAL_DOCS)
+from ..input_utils import (validate, CREATE_MEAL_RULES)
+from ..docs.docs import (
+    CREATE_MEAL_DOCS, GET_MEALS_DOCS, 
+    GET_MEAL_DOCS, UPDATE_MEAL_DOCS, DELETE_MEAL_DOCS,
+    CREATE_MENU_DOCS)
 
 from flasgger.utils import swag_from
 import psycopg2
 
 
-v2 = Blueprint('v2', __name__, url_prefix='/api/v2')
+v2 = Blueprint('v2', __name__, url_prefix='/v2/api')
 
 @v2.route('/meals', methods=['POST'])
 @swag_from(CREATE_MEAL_DOCS)
-def create_meal():
+def v2_create_meal():
     """Create a new meal
     """
     input_data = request.get_json(force=True)
@@ -48,7 +51,7 @@ def create_meal():
 @v2.route('/meals', methods=['GET'])
 @swag_from(GET_MEALS_DOCS)
 # @admin_required
-def get_meals():
+def v2_get_meals():
     """This function retrieves all meals created by the caterer
     """
     data = Meal.get_all()
@@ -79,7 +82,7 @@ def get_meals():
 @swag_from(GET_MEAL_DOCS)
 # @login_required
 # @admin_required
-def get_meal(meal_id):
+def v2_get_meal(meal_id):
     """Retrieves meal
     """
     meal = Meal.query.filter_by(id=meal_id).first()
@@ -104,7 +107,7 @@ def get_meal(meal_id):
 @swag_from(UPDATE_MEAL_DOCS)
 # @login_required
 # @admin_required
-def update_meal(meal_id):
+def v2_update_meal(meal_id):
     """Update a meal
     """
     input_data = request.get_json(force=True)
@@ -120,12 +123,12 @@ def update_meal(meal_id):
             return response
         meal.title= input_data['title'],
         meal.price = input_data['price']
-        # if Meal.meal_already_exist(input_data['title']):
-        #     response = jsonify(
-        #         status='error',
-        #         message='There is a meal with similar title in the database')
-        #     response.status_code = 400
-        #     return response
+        if Meal.meal_already_exist(meal.title):
+            response = jsonify(
+                status='error',
+                message='There is a meal with similar title in the database')
+            response.status_code = 400
+            return response
         db.session.commit()
         response = jsonify({
             'status': 'ok',
@@ -143,7 +146,7 @@ def update_meal(meal_id):
 @swag_from(DELETE_MEAL_DOCS)
 # @login_required
 # @admin_required
-def delete_meal(meal_id):
+def v2_delete_meal(meal_id):
     """Delete meal
     """
     meal = Meal.query.filter_by(id=meal_id).first()
@@ -159,6 +162,41 @@ def delete_meal(meal_id):
                        message="This meal does not exist or you do not have the permission to delete it")
     response.status_code = 400
     return response    
+
+
+@v2.route('/menu', methods=['POST'])
+@swag_from(CREATE_MENU_DOCS)
+def v2_create_menu():
+    """Set day's menu
+    """
+    input_data = request.get_json(force=True)
+    selected_id = input_data['selected_id']
+    # if len(selected_id) != 32:
+    #     response = jsonify({
+    #         'status': 'error',
+    #         'message': "Invalid meal id selected"
+    #     })
+    #     response.status_code = 400
+    #     return response
+    meal = Meal.query.filter_by(id=selected_id) #[meal for meal in Database.meals if meal.get('id') == selected_id]
+    if meal:
+        date = datetime.datetime.today().strftime('%Y-%m-%d')
+        new_menu_item = Menu(date=date, meals_id=selected_id)
+        # Menu.set_menu(new_menu_item)
+        db.session.add(new_menu_item)
+        db.session.commit()
+        response = jsonify({
+            'status': 'ok',
+            'message': "Meal has been successfully added to the menu"
+        })
+        response.status_code = 201
+        return response
+    response = jsonify({
+        'status': 'error',
+        'message': "Meal selected not found"
+    })
+    response.status_code = 400
+    return response
 
 @v2.errorhandler(400)
 def bad_request(error):
@@ -184,4 +222,4 @@ def unauthorized(error):
 def internal_server_error(error):
     """error handler for 500
     """
-    return jsonify(dict(error='Internal server error')), 500    
+    return jsonify(dict(error='Internal server error')), 500   

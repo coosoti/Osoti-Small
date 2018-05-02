@@ -4,12 +4,12 @@ import uuid
 from functools import wraps
 from flask import Blueprint, request, jsonify
 from werkzeug.security import check_password_hash
-from .models.database import Database
-from .models.meal import Meal
-from .models.user import User
-from .models.menu import Menu
-from .models.orders import Order
-from .docs.docs import (
+from ..models.database import Database
+from ..models.meal import Meal
+from ..models.user import User
+from ..models.menu import Menu
+from ..models.orders import Order
+from ..docs.docs import (
     CREATE_MEAL_DOCS,
     DELETE_MEAL_DOCS,
     GET_MEALS_DOCS, GET_MEAL_DOCS,
@@ -25,14 +25,14 @@ from .docs.docs import (
     GET_ORDER_DOCS
 )
 
-from .auth_helper import get_token, token_id
+from ..auth_helper import get_token, token_id
 
-from .input_utils import (validate, CREATE_MEAL_RULES,
+from ..input_utils import (validate, CREATE_MEAL_RULES,
                           USER_SIGNUP_RULES, USER_SIGNIN_RULES)
 
 from flasgger.utils import swag_from
 
-v1 = Blueprint('v1', __name__, url_prefix='/api/v1')
+v1 = Blueprint('v1', __name__, url_prefix='/v1/api')
 
 
 def login_required(arg):

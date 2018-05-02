@@ -57,13 +57,14 @@ class Menu(db.Model):
 
     id = db.Column(db.UUID(as_uuid=True), primary_key=True, default=lambda:uuid.uuid4().hex)
     date = db.Column(db.DateTime, index=True)
-    meal_id = db.Column(db.Integer, db.ForeignKey('meal.id'))
+    meals_id = db.Column(db.UUID(as_uuid=True))
 
 
-    def __init__(self, meal):
+    def __init__(self, date, meals_id):
         """Initializes this class
         """
-        self.meal_id = meal_id        
+        self.meals_id = meals_id
+        self.date = date        
         
     @classmethod
     def set_menu(self):
