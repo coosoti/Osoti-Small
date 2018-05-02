@@ -47,4 +47,32 @@ class Meal(db.Model):
 
     def __repr__(self):
         return "<Meal: {}>".format(self.title)
+
+
+class Menu(db.Model):
+    """Menu model
+    """
+
+    __tablename__ = 'menus'
+
+    id = db.Column(db.UUID(as_uuid=True), primary_key=True, default=lambda:uuid.uuid4().hex)
+    date = db.Column(db.DateTime, index=True)
+    meal_id = db.Column(db.Integer, db.ForeignKey('meal.id'))
+
+
+    def __init__(self, meal):
+        """Initializes this class
+        """
+        self.meal_id = meal_id        
+        
+    @classmethod
+    def set_menu(self):
+        """Set menu and store it into the main database
+        """
+        db.session.add(self)
+        db.session.commit()
+
+    def __repr__(self):
+        return "<Menu: {}>".format(self.date)    
+
          
