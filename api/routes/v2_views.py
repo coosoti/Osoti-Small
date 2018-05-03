@@ -2,12 +2,14 @@ import datetime
 from flask import Blueprint, request, make_response, jsonify
 
 from ..models import db, Meal, Menu, User, BlacklistToken
+from api import bcrypt
 
-from ..input_utils import (validate, CREATE_MEAL_RULES, USER_SIGNUP_RULES)
+from ..input_utils import (validate, CREATE_MEAL_RULES, USER_SIGNUP_RULES, USER_SIGNIN_RULES)
 from ..docs.docs import (
     CREATE_MEAL_DOCS, GET_MEALS_DOCS, 
     GET_MEAL_DOCS, UPDATE_MEAL_DOCS, DELETE_MEAL_DOCS,
-    CREATE_MENU_DOCS, GET_MENU_DOCS, SIGNUP_DOCS)
+    CREATE_MENU_DOCS, GET_MENU_DOCS, SIGNUP_DOCS,
+    SIGNIN_DOCS, SIGNOUT_DOCS)
 
 from flasgger.utils import swag_from
 
@@ -78,8 +80,94 @@ def register():
     response.status_code = 400
     return response    
 
+@v2.route('/auth/login', methods=['POST'])
+@swag_from(SIGNIN_DOCS)
+def login():
+    """This functions allows registered users to login"""
+    input_data = request.get_json(force=True)
+    is_valid = validate(input_data, USER_SIGNIN_RULES)
+
+    if is_valid != True:
+        response = jsonify(
+            status='error',
+            message="Please provide corrent email or password",
+            errors=is_valid
+        )
+        response.status_code = 400
+        return response
+
+    user = User.query.filter_by(email=input_data['email']).first()
+
+    if user and bcrypt.check_password_hash(
+        user.password, input_data['password']):
+        auth_token = user.encode_auth_token(user.id).decode()
+        if auth_token:
+            response = jsonify({
+                'status': 'ok',
+                'message': 'You have successfully logged in',
+                'access_token': auth_token,
+            })
+            response.status_code = 200
+            return response
+         
+        response = jsonify({
+            'status': 'error',
+            'message': 'Please provide valid password'
+        })
+        response.status_code = 401
+        return response
+    response = jsonify({
+        'status': 'error',
+        'message': 'Invalid email or password'
+    })
+    response.status_code = 400
+    return response
 
 
+@v2.route('/auth/logout', methods=['POST'])
+# @login_required
+@swag_from(SIGNOUT_DOCS)
+def logout():
+    """Logs the user out by removing the token"""
+    header = request.headers.get('Authorization')
+    if header:
+        print(header)
+        auth_token = user.encode_auth_token(user.id).decode()
+    else:
+        auth_token = ''
+    if auth_token:
+        user_id = User.decode_auth_token(auth_token)
+        if not isinstance(user_id, str):
+            blacklisted_token = BlacklistToken(token=auth_token)
+            try:
+                db.session.add(blacklisted_token)
+                db.session.commit()
+                response = jsonify({
+                    'status': 'ok',
+                    'message': "You have successfully logged out"
+                    })
+                response.status_code = 200
+                return response
+            except Exception as e:
+                response = jsonify({
+                    'status': 'error',
+                    'message': e
+                    })
+                response.status_code = 200
+                return response
+        else:
+            response = jsonify({
+                    'status': 'error',
+                    'message': user_id                    })
+            response.status_code = 401
+            return response      
+           
+    response = jsonify({
+        'status': 'error',
+        'message': 'You provided wrong authentication token'        
+    })
+    response.status_code = 403
+    return response
 
 
 
