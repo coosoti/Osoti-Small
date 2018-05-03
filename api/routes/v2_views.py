@@ -1,5 +1,6 @@
 import datetime
 from flask import Blueprint, request, make_response, jsonify
+from functools import wraps
 
 from ..models import db, Meal, Menu, User, BlacklistToken
 from api import bcrypt
@@ -24,7 +25,7 @@ def login_required(arg):
         """
         if request.headers.get('Authorization'):
             auth_token = request.headers.get('Authorization')
-            token = auth_token.split(" ")[1]
+            token = auth_token
             resp = User.decode_auth_token(token)
             user = User.query.filter_by(id=resp).first()
             if user:
@@ -67,7 +68,7 @@ def register():
         auth_token = user.encode_auth_token(user.id).decode()
         response = jsonify({
             'status': 'success',
-            'message': 'Successfully registered.',
+            'message': 'You are successfully registered.',
             'auth_token': auth_token
         })
         response.status_code = 201
@@ -100,13 +101,14 @@ def login():
 
     if user and bcrypt.check_password_hash(
         user.password, input_data['password']):
-        auth_token = user.encode_auth_token(user.id).decode()
+        # auth_token = user.encode_auth_token(user.id).decode()
+        auth_token = user.encode_auth_token(user.id)
         if auth_token:
-            response = jsonify({
-                'status': 'ok',
-                'message': 'You have successfully logged in',
-                'access_token': auth_token,
-            })
+            response = jsonify(
+                status='ok',
+                message='You have successfully logged in',
+                auth_token=auth_token.decode()
+            )
             response.status_code = 200
             return response
          
@@ -125,19 +127,18 @@ def login():
 
 
 @v2.route('/auth/logout', methods=['POST'])
-# @login_required
+@login_required
 @swag_from(SIGNOUT_DOCS)
 def logout():
     """Logs the user out by removing the token"""
     header = request.headers.get('Authorization')
     if header:
-        print(header)
-        auth_token = user.encode_auth_token(user.id).decode()
+        auth_token = header
     else:
         auth_token = ''
     if auth_token:
         user_id = User.decode_auth_token(auth_token)
-        if not isinstance(user_id, str):
+        if isinstance(user_id, int):
             blacklisted_token = BlacklistToken(token=auth_token)
             try:
                 db.session.add(blacklisted_token)
@@ -158,7 +159,7 @@ def logout():
         else:
             response = jsonify({
                     'status': 'error',
-                    'message': user_id                    })
+                    'message': user_id})
             response.status_code = 401
             return response      
            
@@ -168,7 +169,6 @@ def logout():
     })
     response.status_code = 403
     return response
-
 
 
 @v2.route('/meals', methods=['POST'])

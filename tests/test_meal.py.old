@@ -1,22 +1,28 @@
-import unittest
-import json
-from api import db
-from api.models import Meal
-from tests.main import MainTestCase
+"""Testing the Meal Class
+"""
+import uuid
+import datetime
+from flask import json
+from tests.test_api import MainTests
+from api.auth_helper import get_token
+from api.models.meal import Meal
+from api.models.database import Database
 
 
-class TestUserEndpoint(MainTestCase):
-    
+class MealTests(MainTests):
+    """Main Test
+    """
+
     def test_create_meal(self):
         """Testing meal creation
         """
-        with self.client:
-            response = self.app.post('v2/api/meals', data=json.dumps({
-                'title': 'Beef with chapati',
-                'price': '600.00'
-            }))
-            self.assertEqual(response.status_code, 201)
-            self.assertIn(b'Meal has been successfully created', response.data)
+        response = self.app.post('/api/v1/meals', data=json.dumps({
+            'id': uuid.uuid4().hex,
+            'title': 'Beef with chapati',
+            'price': '600.00'
+        }), headers={'Authorization': self.test_token})
+        self.assertEqual(response.status_code, 201)
+        self.assertIn(b'Meal has been successfully created', response.data)
 
     def test_get_all_meals(self):
         """Testing retrieval of all meals
@@ -79,6 +85,3 @@ class TestUserEndpoint(MainTestCase):
                                 headers={'Authorization': self.test_token})
         self.assertEqual(response.status_code, 202)
         self.assertIn(b'The meal has been successfully updated', response.data)
-
-if __name__ == '__main__':
-    unittest.main()
