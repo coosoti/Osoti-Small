@@ -32,8 +32,8 @@ from ..input_utils import (validate, CREATE_MEAL_RULES,
 
 from flasgger.utils import swag_from
 
-v1 = Blueprint('v1', __name__, url_prefix='/v1/api')
-
+# v1 = Blueprint('v1', __name__, url_prefix='/v1/api')
+from . import v1
 
 def login_required(arg):
     """ Decorator to check if a user is logged in """

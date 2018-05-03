@@ -1,19 +1,98 @@
 import datetime
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, make_response, jsonify
 
-from ..v2_models.meal import Meal, db, Menu
+from ..v2_models.meal import Meal, Menu, User, BlacklistToken
+from api import db, bycrypt
 
-from ..input_utils import (validate, CREATE_MEAL_RULES)
+from ..input_utils import (validate, CREATE_MEAL_RULES, USER_SIGNUP_RULES)
 from ..docs.docs import (
     CREATE_MEAL_DOCS, GET_MEALS_DOCS, 
     GET_MEAL_DOCS, UPDATE_MEAL_DOCS, DELETE_MEAL_DOCS,
-    CREATE_MENU_DOCS)
+    CREATE_MENU_DOCS, GET_MENU_DOCS, SIGNUP_DOCS)
 
 from flasgger.utils import swag_from
 import psycopg2
 
-
 v2 = Blueprint('v2', __name__, url_prefix='/v2/api')
+
+def login_required(arg):
+    """ Decorator to check if a user is logged in """
+    @wraps(arg)
+    def wrap(*args, **kwargs):
+        """Checking if token exists in the request header
+        """
+        if request.headers.get('Authorization'):
+            auth_token = request.headers.get('Authorization')
+            token = auth_token.split(" ")[1]
+            resp = User.decode_auth_token(token)
+            user = User.query.filter_by(id=resp).first()
+            if user:
+                return arg(*args, **kwargs)
+        response = jsonify({
+            'status': 'error',
+            'message': "Unauthorized"
+        })
+        response.status_code = 401
+        return response
+    return wrap
+
+
+@v2.route('/auth/register', methods=['POST'])
+@swag_from(SIGNUP_DOCS)
+def register():
+    """This functions enables user registration
+    """
+    is_valid = validate(request.get_json(force=True), USER_SIGNUP_RULES)
+    input_data = request.get_json()
+    if is_valid != True:
+        response = jsonify(
+            status='error',
+            message="Please provide valid email and password",
+            errors=is_valid
+        )
+        response.status_code = 400
+        return response
+    user = User.query.filter_by(email=input_data['email']).first()
+    if not user:
+        # try:
+        user = User(
+            username=input_data['username'],
+            email=input_data['email'],
+            password=input_data['password'],
+            designation=input_data['designation'])
+        # insert the user
+        db.session.add(user)
+        db.session.commit()
+        # generate the auth token
+        auth_token = user.encode_auth_token(user.id)
+        responseObject = {
+            'status': 'success',
+            'message': 'Successfully registered.',
+            'auth_token': auth_token.decode()
+        }
+        return make_response(jsonify(responseObject)), 201
+        # except Exception as e:
+        #     responseObject = {
+        #         'status': 'fail',
+        #         'message': 'Some error occurred. Please try again.'
+        #     }
+        #     return make_response(jsonify(responseObject)), 401
+        # else:
+            # responseObject = {
+            #     'status': 'fail',
+            #     'message': 'User already exists. Please Log in.',
+            # }
+            # return make_response(jsonify(responseObject)), 202    
+    # username = input_data['username'],
+    # email = input_data['email'],
+    # admin =  input_data['admin'],
+    # password = input_data['password']
+    # confirm_password = input_data['confirm_password']
+
+
+
+
+
 
 @v2.route('/meals', methods=['POST'])
 @swag_from(CREATE_MEAL_DOCS)
@@ -195,6 +274,35 @@ def v2_create_menu():
         'status': 'error',
         'message': "Meal selected not found"
     })
+    response.status_code = 400
+    return response
+
+@v2.route('/menu', methods=['GET'])
+@swag_from(GET_MENU_DOCS)
+def v2_get_menu():
+    """Get day's menu
+    """
+    date = datetime.datetime.today().strftime('%Y-%m-%d')
+    menu_meals_ids = Menu.query.filter_by(date=date)
+    meals = Meal.query.filter(Menu.meal_id.in_(my_list_of_ids)).all()
+    print(menu_meals_ids)
+    # meals = [meal for meal in menu_meals_ids]
+    menu_meals = []
+    for meal_id in menu_meals_ids:
+        meal = Meal.query.filter_by(id=meal_id).first()
+        menu_meals.append(meal)        
+        response = jsonify({
+            'status': 'ok',
+            'message': "Menu found",
+            'date': date,
+            'meals': menu_meals
+        })
+        response.status_code = 200
+        return response
+    response = jsonify(
+        status='error',
+        message='No menu found'
+    )
     response.status_code = 400
     return response
 
