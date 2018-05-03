@@ -122,26 +122,26 @@ GET_MEAL_DOCS = {
     ],
     "description": "Get meal details",
     "parameters": [
-        # {
-        #     "name": "meal_id",
-        #     "in": "path",
-        #     "description": "meal id",
-        #     "schema": {
-        #         "type": "string",
-        #         "format": "uuid",
-        #     },
-        #     "required": True,
-        # },
         {
-            "name": "Authorization",
-            "in": "header",
-            "description": "Authorization token",
+            "name": "meal_id",
+            "in": "path",
+            "description": "meal id",
             "schema": {
                 "type": "string",
                 "format": "uuid",
             },
             "required": True,
-        }
+        },
+        # {
+        #     "name": "Authorization",
+        #     "in": "header",
+        #     "description": "Authorization token",
+        #     "schema": {
+        #         "type": "string",
+        #         "format": "uuid",
+        #     },
+        #     "required": True,
+        # }
     ],
     "responses": {
         "200": {

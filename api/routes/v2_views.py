@@ -1,8 +1,7 @@
 import datetime
 from flask import Blueprint, request, make_response, jsonify
 
-from ..v2_models.meal import Meal, Menu, User, BlacklistToken
-from api import db, bycrypt
+from ..models import db, Meal, Menu, User, BlacklistToken
 
 from ..input_utils import (validate, CREATE_MEAL_RULES, USER_SIGNUP_RULES)
 from ..docs.docs import (
@@ -11,7 +10,7 @@ from ..docs.docs import (
     CREATE_MENU_DOCS, GET_MENU_DOCS, SIGNUP_DOCS)
 
 from flasgger.utils import swag_from
-import psycopg2
+
 
 v2 = Blueprint('v2', __name__, url_prefix='/v2/api')
 
@@ -54,7 +53,6 @@ def register():
         return response
     user = User.query.filter_by(email=input_data['email']).first()
     if not user:
-        # try:
         user = User(
             username=input_data['username'],
             email=input_data['email'],
@@ -64,30 +62,21 @@ def register():
         db.session.add(user)
         db.session.commit()
         # generate the auth token
-        auth_token = user.encode_auth_token(user.id)
-        responseObject = {
+        auth_token = user.encode_auth_token(user.id).decode()
+        response = jsonify({
             'status': 'success',
             'message': 'Successfully registered.',
-            'auth_token': auth_token.decode()
-        }
-        return make_response(jsonify(responseObject)), 201
-        # except Exception as e:
-        #     responseObject = {
-        #         'status': 'fail',
-        #         'message': 'Some error occurred. Please try again.'
-        #     }
-        #     return make_response(jsonify(responseObject)), 401
-        # else:
-            # responseObject = {
-            #     'status': 'fail',
-            #     'message': 'User already exists. Please Log in.',
-            # }
-            # return make_response(jsonify(responseObject)), 202    
-    # username = input_data['username'],
-    # email = input_data['email'],
-    # admin =  input_data['admin'],
-    # password = input_data['password']
-    # confirm_password = input_data['confirm_password']
+            'auth_token': auth_token
+        })
+        response.status_code = 201
+        return response
+    response = jsonify(
+        status='error',
+        message="Please provide valid emailyth and password",
+        errors=is_valid
+    )
+    response.status_code = 400
+    return response    
 
 
 
@@ -202,7 +191,7 @@ def v2_update_meal(meal_id):
             return response
         meal.title= input_data['title'],
         meal.price = input_data['price']
-        if Meal.meal_already_exist(meal.title):
+        if Meal.meal_already_exist(meal.title) is True:
             response = jsonify(
                 status='error',
                 message='There is a meal with similar title in the database')
@@ -284,7 +273,7 @@ def v2_get_menu():
     """
     date = datetime.datetime.today().strftime('%Y-%m-%d')
     menu_meals_ids = Menu.query.filter_by(date=date)
-    meals = Meal.query.filter(Menu.meal_id.in_(my_list_of_ids)).all()
+    # meals = Meal.query.filter(Menu.meal_id.in_(my_list_of_ids)).all()
     print(menu_meals_ids)
     # meals = [meal for meal in menu_meals_ids]
     menu_meals = []
