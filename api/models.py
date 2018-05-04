@@ -7,7 +7,11 @@ import datetime
 from api import app, db, bcrypt
 # db = SQLAlchemy()
 
-db.UUID = UUID
+
+menu_meals = db.Table('menu_meals',
+    db.Column('menu_id', db.Integer, db.ForeignKey('menus.id')),
+    db.Column('meal_id', db.Integer, db.ForeignKey('meals.id'))
+)
 
 
 class Meal(db.Model):
@@ -16,9 +20,11 @@ class Meal(db.Model):
 
     __tablename__ = 'meals'
 
-    id = db.Column(db.UUID(as_uuid=True), primary_key=True, default=lambda:uuid.uuid4().hex)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     title = db.Column(db.String(100))
     price = db.Column(db.Float)
+    # menu_meals = db.relationship('Menu', secondary=menu_meals,
+    #     backref=db.backref('meals', lazy='dynamic', uselist=True))
 
     def __init__(self, title, price):
         """initialize with title and price.
@@ -58,15 +64,14 @@ class Menu(db.Model):
 
     __tablename__ = 'menus'
 
-    id = db.Column(db.UUID(as_uuid=True), primary_key=True, default=lambda:uuid.uuid4().hex)
-    date = db.Column(db.DateTime, index=True)
-    meals_id = db.Column(db.UUID(as_uuid=True))
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    date = db.Column(db.DateTime)
+    menu_meals = db.relationship('Meal', secondary=menu_meals,
+        backref=db.backref('meals', lazy=True, uselist=True))
 
-
-    def __init__(self, date, meals_id):
+    def __init__(self, date):
         """Initializes this class
         """
-        self.meals_id = meals_id
         self.date = date        
         
     @classmethod
@@ -77,7 +82,7 @@ class Menu(db.Model):
         db.session.commit()
 
     def __repr__(self):
-        return "<Menu: {}>".format(self.id) 
+        return "<Menu: {}>".format(self.menu_meals) 
 
 
 class User(db.Model):

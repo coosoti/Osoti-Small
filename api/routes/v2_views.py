@@ -1,4 +1,5 @@
 import datetime
+import itertools
 from flask import Blueprint, request, make_response, jsonify
 from functools import wraps
 
@@ -325,21 +326,23 @@ def v2_delete_meal(meal_id):
 def v2_create_menu():
     """Set day's menu
     """
+    date = datetime.datetime.today().strftime('%Y-%m-%d')      
+    new_menu = Menu(date=date)
+    db.session.add(new_menu)
+    db.session.commit()  
     input_data = request.get_json(force=True)
     selected_id = input_data['selected_id']
-    # if len(selected_id) != 32:
-    #     response = jsonify({
-    #         'status': 'error',
-    #         'message': "Invalid meal id selected"
-    #     })
-    #     response.status_code = 400
-    #     return response
-    meal = Meal.query.filter_by(id=selected_id) #[meal for meal in Database.meals if meal.get('id') == selected_id]
+    print(type(selected_id))
+    if not isinstance(selected_id, str):
+        response = jsonify({
+            'status': 'error',
+            'message': "Invalid meal id selected"
+        })
+        response.status_code = 400
+        return response
+    meal = Meal.query.filter_by(id=selected_id).first() #[meal for meal in Database.meals if meal.get('id') == selected_id]
     if meal:
-        date = datetime.datetime.today().strftime('%Y-%m-%d')
-        new_menu_item = Menu(date=date, meals_id=selected_id)
-        # Menu.set_menu(new_menu_item)
-        db.session.add(new_menu_item)
+        new_menu.menu_meals.append(meal)
         db.session.commit()
         response = jsonify({
             'status': 'ok',
@@ -359,26 +362,34 @@ def v2_create_menu():
 def v2_get_menu():
     """Get day's menu
     """
-    date = datetime.datetime.today().strftime('%Y-%m-%d')
-    menu_meals_ids = Menu.query.filter_by(date=date)
-    # meals = Meal.query.filter(Menu.meal_id.in_(my_list_of_ids)).all()
-    print(menu_meals_ids)
-    # meals = [meal for meal in menu_meals_ids]
-    menu_meals = []
-    for meal_id in menu_meals_ids:
-        meal = Meal.query.filter_by(id=meal_id).first()
-        menu_meals.append(meal)        
+    menu_meals = db.engine.execute("SELECT meal_id FROM menu_meals;")
+     
+    meals = []
+    for m_id in menu_meals:
+        meals.append(list(m_id))
+    meal_ids = list(itertools.chain(*meals)) 
+    menu_meals = [Meal.query.filter_by(id=id).one() for id in meal_ids]
+    if menu_meals:
+        all_menu_meals = []   
+        for meal in menu_meals:
+            obj = {
+                'id': meal.id,
+                'title': meal.title,
+                'price': meal.price
+            }
+            all_menu_meals.append(obj)
         response = jsonify({
             'status': 'ok',
-            'message': "Menu found",
-            'date': date,
-            'meals': menu_meals
+            'date': datetime.datetime.today().strftime('%Y-%m-%d'),
+            'message': 'There are ' + str(len(menu_meals)) + ' meals',
+            'meals': all_menu_meals
         })
         response.status_code = 200
-        return response
+        return response 
     response = jsonify(
         status='error',
         message='No menu found'
+        # data=today_menu.meals
     )
     response.status_code = 400
     return response
