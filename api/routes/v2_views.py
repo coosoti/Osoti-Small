@@ -1,9 +1,8 @@
 import datetime
-import itertools
 from flask import Blueprint, request, make_response, jsonify
 from functools import wraps
 
-from ..models import db, Meal, Menu, User, BlacklistToken
+from ..models import db, Meal, Menu, User, BlacklistToken, Order
 from api import bcrypt
 
 from ..input_utils import (validate, CREATE_MEAL_RULES, USER_SIGNUP_RULES, USER_SIGNIN_RULES)
@@ -11,7 +10,7 @@ from ..docs.docs import (
     CREATE_MEAL_DOCS, GET_MEALS_DOCS, 
     GET_MEAL_DOCS, UPDATE_MEAL_DOCS, DELETE_MEAL_DOCS,
     CREATE_MENU_DOCS, GET_MENU_DOCS, SIGNUP_DOCS,
-    SIGNIN_DOCS, SIGNOUT_DOCS)
+    SIGNIN_DOCS, SIGNOUT_DOCS, MAKE_ORDER_DOCS)
 
 from flasgger.utils import swag_from
 
@@ -397,6 +396,31 @@ def v2_get_menu():
     )
     response.status_code = 204
     return response    
+
+@v2.route('/orders', methods=['POST'])
+@swag_from(MAKE_ORDER_DOCS)
+def make_order():
+    """Make an order"""
+    date = datetime.datetime.today().strftime('%Y-%m-%d')
+    menu = Menu.query.filter_by(date=date).first()
+    input_data = request.get_json(force=True)
+    selected_meal_id = input_data['selected_meal_id']
+    meal_ids = []
+    for meal in menu.meals:
+        meal_ids.append(meal.id)  
+    for selected_meal_id in meal_ids:
+        meal = Meal.query.filter_by(id=selected_meal_id).first()
+        Order.save(meal)
+        response = jsonify({
+            'status': 'ok',
+            'message': 'You order is successfull',
+            'data': date
+        })
+        response.status_code = 201
+        return response
+
+    return jsonify(dict(error='The meal is not found')), 400     
+
 
 
 @v2.errorhandler(400)

@@ -58,8 +58,7 @@ class Meal(db.Model):
 
 
 class Menu(db.Model):
-    """Menu model
-    """
+    """Menu model"""
 
     __tablename__ = 'menus'
 
@@ -82,6 +81,33 @@ class Menu(db.Model):
 
     def __repr__(self):
         return "<Menu: {}>".format(self.menu_meals) 
+
+class Order(db.Model):
+    """ Order Model for storing user orders related details"""
+
+    __tablename__ = "orders"
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    date_created = db.Column(db.DateTime, default=db.func.current_timestamp())
+    date_modified = db.Column(
+        db.DateTime, default=db.func.current_timestamp(),
+        onupdate=db.func.current_timestamp())
+    meal_id = db.Column(db.Integer)
+
+    def __init__(self, meal_id):
+        """initialize with meal_id."""
+        self.meal_id = meal_id
+
+    def save(self):
+        db.session.add(self)
+        db.session.commit()
+
+    @staticmethod
+    def get_all():
+        return Order.query.all()
+
+    def __repr__(self):
+        return "<Order: {}>".format(self.meal_id)
 
 
 class User(db.Model):
