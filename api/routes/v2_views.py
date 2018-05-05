@@ -10,7 +10,7 @@ from ..docs.docs import (
     CREATE_MEAL_DOCS, GET_MEALS_DOCS, 
     GET_MEAL_DOCS, UPDATE_MEAL_DOCS, DELETE_MEAL_DOCS,
     CREATE_MENU_DOCS, GET_MENU_DOCS, SIGNUP_DOCS,
-    SIGNIN_DOCS, SIGNOUT_DOCS, MAKE_ORDER_DOCS)
+    SIGNIN_DOCS, SIGNOUT_DOCS, MAKE_ORDER_DOCS, GET_ORDERS_DOCS)
 
 from flasgger.utils import swag_from
 
@@ -409,12 +409,13 @@ def make_order():
     for meal in menu.meals:
         meal_ids.append(meal.id)  
     for selected_meal_id in meal_ids:
-        meal = Meal.query.filter_by(id=selected_meal_id).first()
+        # meal = Meal.query.filter_by(id=selected_meal_id).first()
+        meal = Order(meal_id=selected_meal_id)
         Order.save(meal)
         response = jsonify({
             'status': 'ok',
             'message': 'You order is successfull',
-            'data': date
+            'date': date
         })
         response.status_code = 201
         return response
@@ -422,6 +423,42 @@ def make_order():
     return jsonify(dict(error='The meal is not found')), 400     
 
 
+@v2.route('/orders', methods=['GET'])
+@swag_from(GET_ORDERS_DOCS)
+def get_orders():
+    """This function retrieves all orders made by customers
+    """
+    data = Order.get_all()
+    print(data)
+    orders = []
+    if data:     
+        for order in data:
+            meal = Meal.query.filter_by(id=order.meal_id).first()
+            data = {
+                'id': meal.id,
+                'title': meal.title,
+                'price': meal.price
+            }
+            obj = {
+                'id': order.id,
+                'created ': order.date_created,
+                'modified': order.date_modified,
+                'order': data
+            }
+            orders.append(obj)
+        response = jsonify({
+            'status': 'ok',
+            'message': 'There are ' + str(len(orders)) + ' orders',
+            'data': orders
+        })
+        response.status_code = 200
+        return response
+    response = jsonify(
+        status='error',
+        message='The are no orders'
+    )
+    response.status_code = 204
+    return response
 
 @v2.errorhandler(400)
 def bad_request(error):

@@ -92,7 +92,7 @@ class Order(db.Model):
     date_modified = db.Column(
         db.DateTime, default=db.func.current_timestamp(),
         onupdate=db.func.current_timestamp())
-    meal_id = db.Column(db.Integer)
+    meal_id = db.Column(db.String(5))
 
     def __init__(self, meal_id):
         """initialize with meal_id."""
@@ -107,7 +107,7 @@ class Order(db.Model):
         return Order.query.all()
 
     def __repr__(self):
-        return "<Order: {}>".format(self.meal_id)
+        return "<Order: {}>".format(self.date_created)
 
 
 class User(db.Model):
