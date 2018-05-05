@@ -57,5 +57,13 @@ SWAGGER = Swagger(app, config=SWAGGER_CONFIG, template=TEMPLATE)
 bcrypt = Bcrypt(app)
 db = SQLAlchemy(app)
 
-from api.routes.v2_views import v2
-app.register_blueprint(v2)
+# from api.routes.v2_views import v2
+from api.meals.views import meals
+from api.menu.views import menu
+from api.auth.views import auth
+from api.orders.views import orders
+# app.register_blueprint(v2)
+app.register_blueprint(meals)
+app.register_blueprint(menu)
+app.register_blueprint(auth)
+app.register_blueprint(orders)

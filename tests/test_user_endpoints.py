@@ -1,7 +1,7 @@
 import unittest
 import json
 from api import db
-from api.models import User
+from api.models.models import User
 from tests.main import MainTestCase
 
 
@@ -11,7 +11,7 @@ class TestUserEndpoint(MainTestCase):
         """ Test for user signup 
         """
         with self.client:
-            response = self.client.post('v2/api/auth/register',
+            response = self.client.post('api/v2/auth/register',
                 data=json.dumps(dict(
                     username='kulundeng',
                     email='vicharles@gmail.com',
@@ -30,7 +30,7 @@ class TestUserEndpoint(MainTestCase):
         with self.client:
             # user registration
             response = self.client.post(
-                'v2/api/auth/register',
+                'api/v2/auth/register',
                 data=json.dumps(dict(
                     username='victorvenosa',
                     email='osoticharles@gmail.com',
@@ -46,7 +46,7 @@ class TestUserEndpoint(MainTestCase):
             )
             self.assertEqual(response.status_code, 201)
             response = self.client.post(
-                'v2/api/auth/login',
+                'api/v2/auth/login',
                 data=json.dumps(dict(
                     email='osoticharles@gmail.com',
                     password='kulundeng'
@@ -61,7 +61,7 @@ class TestUserEndpoint(MainTestCase):
         """ Test for login of non-registered user """
         with self.client:
             response = self.client.post(
-                'v2/api/auth/login',
+                'api/v2/auth/login',
                 data=json.dumps(dict(
                     email='victorvenosa@gmail.com',
                     password='thatisthewayitis'
@@ -77,7 +77,7 @@ class TestUserEndpoint(MainTestCase):
         with self.client:
             # user registration
             response = self.client.post(
-                'v2/api/auth/register',
+                'api/v2/auth/register',
                 data=json.dumps(dict(
                     username='victorvenosa',
                     email='osoticharles@gmail.com',
@@ -93,7 +93,7 @@ class TestUserEndpoint(MainTestCase):
             self.assertEqual(response.status_code, 201)
             # user login
             response = self.client.post(
-                'v2/api/auth/login',
+                'api/v2/auth/login',
                 data=json.dumps(dict(
                     email='osoticharles@gmail.com',
                     password='kulundeng'
@@ -105,7 +105,7 @@ class TestUserEndpoint(MainTestCase):
             self.assertEqual(response.status_code, 200)
             # valid token logout
             response = self.client.post(
-                'v2/api/auth/logout',
+                'api/v2/auth/logout',
                 headers=dict(
                     Authorization='Bearer ' + json.loads(
                         response.data.decode()
