@@ -15,7 +15,7 @@ class TestDevelopmentConfig(TestCase):
         self.assertTrue(app.config['DEBUG'] is True)
         self.assertFalse(current_app is None)
         self.assertTrue(
-            app.config['SQLALCHEMY_DATABASE_URI'] == 'postgresql://postgres:28201903@localhost:5432/gloria'
+            app.config['SQLALCHEMY_DATABASE_URI'] == 'postgresql://postgres:28201903@localhost:5432/osotismall'
         )
 
 

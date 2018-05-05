@@ -13,7 +13,6 @@ class TestUser(MainTestCase):
             email='osoticharles@gmail.com',
             designation='caterer',
             password='password1'
-
         )
         db.session.add(sample_user)
         db.session.commit()
