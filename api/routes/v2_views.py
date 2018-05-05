@@ -324,76 +324,6 @@ def v2_delete_meal(meal_id):
     return response    
 
 
-# @v2.route('/menu', methods=['POST'])
-# @swag_from(CREATE_MENU_DOCS)
-# def v2_create_menu():
-#     """Set up menu"""
-#     date = datetime.datetime.today().strftime('%Y-%m-%d')      
-#     new_menu = Menu(date=date)
-#     db.session.add(new_menu)
-#     db.session.commit()  
-#     input_data = request.get_json(force=True)
-#     selected_id = input_data['selected_id']
-#     if not selected_id.isdigit():
-#         response = jsonify({
-#             'status': 'error',
-#             'message': "Invalid meal id selected"
-#         })
-#         response.status_code = 400
-#         return response
-#     meal = Meal.query.filter_by(id=selected_id).first()
-#     if meal:
-#         new_menu.menu_meals.append(meal)
-#         db.session.commit()
-#         response = jsonify({
-#             'status': 'ok',
-#             'message': "Meal has been successfully added to the menu"
-#         })
-#         response.status_code = 201
-#         return response
-#     response = jsonify({
-#         'status': 'error',
-#         'message': "Meal selected not found"
-#     })
-#     response.status_code = 400
-#     return response
-
-# @v2.route('/menu', methods=['GET'])
-# @swag_from(GET_MENU_DOCS)
-# def v2_get_menu():
-#     """Get day's menu"""
-#     menu_meals = db.engine.execute("SELECT meal_id FROM menu_meals;")
-     
-#     meals = []
-#     for m_id in menu_meals:
-#         meals.append(list(m_id))
-#     meal_ids = list(itertools.chain(*meals)) 
-#     menu_meals = [Meal.query.filter_by(id=id).one() for id in meal_ids]
-#     if menu_meals:
-#         all_menu_meals = []   
-#         for meal in menu_meals:
-#             obj = {
-#                 'id': meal.id,
-#                 'title': meal.title,
-#                 'price': meal.price
-#             }
-#             all_menu_meals.append(obj)
-#         response = jsonify({
-#             'status': 'ok',
-#             'date': datetime.datetime.today().strftime('%Y-%m-%d'),
-#             'message': 'There are ' + str(len(menu_meals)) + ' meals',
-#             'meals': all_menu_meals
-#         })
-#         response.status_code = 200
-#         return response 
-#     response = jsonify(
-#         status='error',
-#         message='No menu found'
-#         # data=today_menu.meals
-#     )
-#     response.status_code = 400
-#     return response
-
 @v2.route('/menu', methods=['POST'])
 @swag_from(CREATE_MENU_DOCS)
 def v2_create_menu():
@@ -412,15 +342,30 @@ def v2_create_menu():
     meal_ids = input_data['selected_ids']
 
     for meal_id in  meal_ids:
+        if not meal_id.isdigit():
+            response = jsonify({
+                'status': 'error',
+                'message': "Meal id selected is not valid"
+            })
+            response.status_code = 400
+            return response
+
         meal = Meal.query.filter_by(id=meal_id).first()
+        if not meal:
+            response = jsonify({
+                'status': 'error',
+                'message': "Meal selected not found"
+            })
+            response.status_code = 400
+            return response
         menu.meals.append(meal)
     db.session.add(menu)
     db.session.commit()
     response = jsonify({
         'status': 'ok',
-        'message': "Menu have successfully been created"
+        'message': "Menu has been successfully created"
     })
-    response.status_code = 200
+    response.status_code = 201
     return response
 
 @v2.route('/menu', methods=['GET'])
@@ -452,7 +397,6 @@ def v2_get_menu():
     )
     response.status_code = 204
     return response    
-
 
 
 @v2.errorhandler(400)
