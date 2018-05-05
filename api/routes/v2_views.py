@@ -10,7 +10,7 @@ from ..docs.docs import (
     CREATE_MEAL_DOCS, GET_MEALS_DOCS, 
     GET_MEAL_DOCS, UPDATE_MEAL_DOCS, DELETE_MEAL_DOCS,
     CREATE_MENU_DOCS, GET_MENU_DOCS, SIGNUP_DOCS,
-    SIGNIN_DOCS, SIGNOUT_DOCS, MAKE_ORDER_DOCS, GET_ORDERS_DOCS)
+    SIGNIN_DOCS, SIGNOUT_DOCS, MAKE_ORDER_DOCS, GET_ORDERS_DOCS, GET_ORDER_DOCS)
 
 from flasgger.utils import swag_from
 
@@ -458,6 +458,33 @@ def get_orders():
         message='The are no orders'
     )
     response.status_code = 204
+    return response
+
+@v2.route('/orders/<order_id>', methods=['GET'])
+@swag_from(GET_ORDER_DOCS)
+def get_order(order_id):
+    """get order details 
+    """
+    order = Order.query.get_or_404(order_id)
+    if order:
+        meal = Meal.query.filter_by(id=order.meal_id).first()
+        data = {
+            'id': meal.id,
+            'title': meal.title,
+            'price': meal.price
+        }
+        response = jsonify({
+            'status': 'ok',
+            'message': "The order has been found",
+            'id': order.id,
+            'created ': order.date_created,
+            'order': [data]
+        })
+        response.status_code = 200
+        return response
+    response = jsonify(status='error',
+                       message='This order does not exist')
+    response.status_code = 400
     return response
 
 @v2.errorhandler(400)
