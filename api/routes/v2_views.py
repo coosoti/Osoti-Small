@@ -10,10 +10,11 @@ from ..docs.docs import (
     CREATE_MEAL_DOCS, GET_MEALS_DOCS, 
     GET_MEAL_DOCS, UPDATE_MEAL_DOCS, DELETE_MEAL_DOCS,
     CREATE_MENU_DOCS, GET_MENU_DOCS, SIGNUP_DOCS,
-    SIGNIN_DOCS, SIGNOUT_DOCS, MAKE_ORDER_DOCS, GET_ORDERS_DOCS, GET_ORDER_DOCS)
+    SIGNIN_DOCS, SIGNOUT_DOCS, MAKE_ORDER_DOCS, GET_ORDERS_DOCS, GET_ORDER_DOCS, UPDATE_ORDER_DOCS)
 
 from flasgger.utils import swag_from
 
+date = datetime.datetime.today().strftime('%Y-%m-%d')
 
 v2 = Blueprint('v2', __name__, url_prefix='/v2/api')
 
@@ -464,7 +465,7 @@ def get_orders():
 @swag_from(GET_ORDER_DOCS)
 def get_order(order_id):
     """get order details 
-    """
+    """    
     order = Order.query.get_or_404(order_id)
     if order:
         meal = Meal.query.filter_by(id=order.meal_id).first()
@@ -486,6 +487,33 @@ def get_order(order_id):
                        message='This order does not exist')
     response.status_code = 400
     return response
+
+@v2.route('/orders/<order_id>', methods=['PUT'])
+@swag_from(UPDATE_ORDER_DOCS)
+def update_order(order_id):
+    """Modify an Order"""
+    order = Order.query.get_or_404(order_id)
+    if order:
+        menu = Menu.query.filter_by(date=date).first()
+        input_data = request.get_json(force=True)
+        selected_meal_id = input_data['selected_meal_id']
+        meal_ids = []
+        for meal in menu.meals:
+            meal_ids.append(meal.id)  
+        for selected_meal_id in meal_ids:
+            order.meal_id = selected_meal_id     
+            db.session.commit()
+            response = jsonify({
+                'status': 'ok',
+                'message': 'You have updated your order successfully'
+            })
+            response.status_code = 200
+            return response
+    response = jsonify(status='error',
+                       message='This order does not exist')
+    response.status_code = 400
+    return response        
+
 
 @v2.errorhandler(400)
 def bad_request(error):
