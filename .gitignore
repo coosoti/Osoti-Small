@@ -3,8 +3,10 @@ __pycache__/
 
 .coverage
 .coverage.*
+tmp/
 
 # Environments
 .env
 env/
 migrations/
+
