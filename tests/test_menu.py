@@ -3,43 +3,60 @@
 import datetime
 import uuid
 from flask import json
-from tests.test_api import MainTests
-from api.auth_helper import get_token
-from api.models.meal import Meal
-from api.models.database import Database
+from api.models import Meal
+from tests.main import MainTestCase
 
 
-class MenuTests(MainTests):
+class MenuTests(MainTestCase):
     """Main Test
     """
 
     def test_set_up_menu(self):
         """Test set today's menu 
         """
-        Meal.save(self.menu_meal_data)
-        response = self.app.post('/api/v1/menu', data=json.dumps({
-            'selected_id': self.menu_meal_data['id']
-        }))
-        self.assertEqual(response.status_code, 201)
-        self.assertIn(
-            b'Meal has been successfully added to the menu', response.data)
+        with self.client:
+            response = self.client.post('v2/api/meals', data=json.dumps({
+                'title': 'Beef with chapati',
+                'price': '600.00'
+            }))
+            self.assertEqual(response.status_code, 201)
+            self.assertIn(b'Meal has been successfully created', response.data)
+
+            response = self.client.post('v2/api/menu', data=json.dumps({
+                'selected_ids': ["1"]
+            }))
+            self.assertEqual(response.status_code, 201)
+            self.assertIn(
+                b'Menu has been successfully created', response.data)
 
     def test_set_up_menu_with_invalid_meal_id(self):
         """Test add meal to today's menu with invalid meal id 
         """
-        Meal.save(self.menu_meal_data)
-        response = self.app.post('/api/v1/menu', data=json.dumps({
-            'selected_id': 'hljjhjhjhl'
-        }))
-        self.assertEqual(response.status_code, 400)
-        self.assertIn(b'Invalid meal id selected', response.data)
+        with self.client:
+            response = self.client.post('v2/api/meals', data=json.dumps({
+                'title': 'Beef with chapati',
+                'price': '600.00'
+            }))
+            self.assertEqual(response.status_code, 201)
+            self.assertIn(b'Meal has been successfully created', response.data)
+            response = self.client.post('v2/api/menu', data=json.dumps({
+                'selected_ids': ["a"]
+            }))
+            self.assertEqual(response.status_code, 400)
+
 
     def test_set_up_menu_with_non_existing_meal_id(self):
         """Test add meal to today's menu with a meal that is not in the meal options 
         """
-        Meal.save(self.menu_meal_data)
-        response = self.app.post('/api/v1/menu', data=json.dumps({
-            'selected_id': 'abcdefghijklmnopqrstuvwxyzabcdef'
-        }))
-        self.assertEqual(response.status_code, 400)
-        self.assertIn(b'Meal selected not found', response.data)
+        with self.client:
+            response = self.client.post('v2/api/meals', data=json.dumps({
+                'title': 'Beef with chapati',
+                'price': '600.00'
+            }))
+            self.assertEqual(response.status_code, 201)
+            self.assertIn(b'Meal has been successfully created', response.data)
+            response = self.client.post('v2/api/menu', data=json.dumps({
+                'selected_ids': ['5']
+            }))
+            self.assertEqual(response.status_code, 400)
+            self.assertIn(b'Meal selected not found', response.data)

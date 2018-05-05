@@ -79,7 +79,7 @@ GET_MEALS_DOCS = {
     # ],
     "responses": {
         "200": {
-            "description": "Return response status and message and a list of posts by the user",
+            "description": "Return response status and message and a list of meals by the caterer",
             "schema": {
                 "id": "get_meals_response",
                 "properties": {
@@ -122,26 +122,26 @@ GET_MEAL_DOCS = {
     ],
     "description": "Get meal details",
     "parameters": [
-        # {
-        #     "name": "meal_id",
-        #     "in": "path",
-        #     "description": "meal id",
-        #     "schema": {
-        #         "type": "string",
-        #         "format": "uuid",
-        #     },
-        #     "required": True,
-        # },
         {
-            "name": "Authorization",
-            "in": "header",
-            "description": "Authorization token",
+            "name": "meal_id",
+            "in": "path",
+            "description": "meal id",
             "schema": {
                 "type": "string",
                 "format": "uuid",
             },
             "required": True,
-        }
+        },
+        # {
+        #     "name": "Authorization",
+        #     "in": "header",
+        #     "description": "Authorization token",
+        #     "schema": {
+        #         "type": "string",
+        #         "format": "uuid",
+        #     },
+        #     "required": True,
+        # }
     ],
     "responses": {
         "200": {
@@ -167,7 +167,7 @@ GET_MEAL_DOCS = {
                                 },
                                 "title": {
                                     "type": "string",
-                                    "example": "The First Post"
+                                    "example": "The First Meal"
                                 },
                                 "price": {
                                     "type": "float",
@@ -524,7 +524,7 @@ GET_MENU_DOCS = {
     ],
     "responses": {
         "200": {
-            "description": "Return response status and message and a list of posts by the user",
+            "description": "Return response status and message and a list of meals in the menu",
             "schema": {
                 "id": "get_meals_response",
                 "properties": {
@@ -534,7 +534,7 @@ GET_MENU_DOCS = {
                     },
                     "message": {
                         "type": "string",
-                        "example": "You have 1 meal"
+                        "example": "You have 1 menu"
                     },
                     "date": {
                         "type": "date",
@@ -603,7 +603,7 @@ MAKE_ORDER_DOCS = {
     ],
     "responses": {
         "200": {
-            "description": "Return response status and message and a list of posts by the user",
+            "description": "Return response status and message on the success of the order user",
             "schema": {
                 "id": "get_meals_response",
                 "properties": {
@@ -722,7 +722,7 @@ GET_ORDERS_DOCS = {
     # ],
     "responses": {
         "200": {
-            "description": "Return response status and message and a list of posts by the user",
+            "description": "Return response status and message and a list of orders",
             "schema": {
                 "id": "get_meals_response",
                 "properties": {
@@ -785,7 +785,7 @@ GET_ORDER_DOCS = {
     ],
     "responses": {
         "200": {
-            "description": "Return response status and message and a list of posts by the user",
+            "description": "Return response status and message and a list of orders by the user",
             "schema": {
                 "id": "get_meals_response",
                 "properties": {

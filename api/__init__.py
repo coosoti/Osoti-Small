@@ -1,21 +1,20 @@
-""" Initialize the app 
-"""
+import os
 
 from flask import Flask
+from flask_bcrypt import Bcrypt
 from flask_sqlalchemy import SQLAlchemy
+from flask_cors import CORS
 from instance.config import app_config
-from .views import v1
-from .v2_views import v2
 
-db = SQLAlchemy()
+config_name = os.getenv('MODE')
 
-def create_app(config_name):
-    app = Flask(__name__, instance_relative_config=True)
-    app.config.from_object(app_config[config_name])
-    SQLALCHEMY_ECHO = False
-    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-    app.register_blueprint(v1)
-    app.register_blueprint(v2)
+app = Flask(__name__)
+CORS(app)
 
-    return app
-    
+app.config.from_object(app_config[config_name])
+
+bcrypt = Bcrypt(app)
+db = SQLAlchemy(app)
+
+from api.routes.v2_views import v2
+app.register_blueprint(v2)
