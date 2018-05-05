@@ -23,8 +23,7 @@ class Meal(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     title = db.Column(db.String(100))
     price = db.Column(db.Float)
-    # menu_meals = db.relationship('Menu', secondary=menu_meals,
-    #     backref=db.backref('meals', lazy='dynamic', uselist=True))
+
 
     def __init__(self, title, price):
         """initialize with title and price.
@@ -66,7 +65,7 @@ class Menu(db.Model):
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     date = db.Column(db.DateTime)
-    menu_meals = db.relationship('Meal', secondary=menu_meals,
+    meals = db.relationship('Meal', secondary=menu_meals,
         backref=db.backref('meals', lazy=True, uselist=True))
 
     def __init__(self, date):
@@ -113,7 +112,7 @@ class User(db.Model):
         """
         try:
             payload = {
-                'exp': datetime.datetime.utcnow() + datetime.timedelta(days=0, seconds=60),
+                'exp': datetime.datetime.utcnow() + datetime.timedelta(days=0, seconds=120),
                 'iat': datetime.datetime.utcnow(),
                 'sub': user_id
             }

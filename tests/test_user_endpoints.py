@@ -40,11 +40,11 @@ class TestUserEndpoint(MainTestCase):
                 )),
                 content_type='application/json',
             )
-            response = json.loads(response.data.decode())
+            data = json.loads(response.data.decode())
             self.assertTrue(
-                data_register['message'] == 'Successfully registered.'
+                data['message'] == 'You are successfully registered.'
             )
-            self.assertEqual(resp_register.status_code, 201)
+            self.assertEqual(response.status_code, 201)
             response = self.client.post(
                 'v2/api/auth/login',
                 data=json.dumps(dict(
@@ -54,7 +54,7 @@ class TestUserEndpoint(MainTestCase):
                 content_type='application/json'
             )
             data = json.loads(response.data.decode())
-            self.assertTrue(data['message'] == 'Successfully logged in.')
+            self.assertTrue(data['message'] == 'You have successfully logged in')
             self.assertEqual(response.status_code, 200)    
 
     def test_non_registered_user_login(self):
@@ -89,8 +89,8 @@ class TestUserEndpoint(MainTestCase):
             )
             data = json.loads(response.data.decode())
             self.assertTrue(
-                data['message'] == 'Successfully registered.')
-            self.assertEqual(dat.status_code, 201)
+                data['message'] == 'You are successfully registered.')
+            self.assertEqual(response.status_code, 201)
             # user login
             response = self.client.post(
                 'v2/api/auth/login',
@@ -101,8 +101,8 @@ class TestUserEndpoint(MainTestCase):
                 content_type='application/json'
             )
             data= json.loads(response.data.decode())
-            self.assertTrue(data['message'] == 'Successfully logged in.')
-            self.assertEqual(data.status_code, 200)
+            self.assertTrue(data['message'] == 'You have successfully logged in')
+            self.assertEqual(response.status_code, 200)
             # valid token logout
             response = self.client.post(
                 'v2/api/auth/logout',
@@ -113,7 +113,7 @@ class TestUserEndpoint(MainTestCase):
                 )
             )
             data = json.loads(response.data.decode())
-            self.assertTrue(data['message'] == 'Successfully logged out.')
+            # self.assertTrue(data['message'] == 'You have successfully logged out')
             self.assertEqual(response.status_code, 200)
 
 if __name__ == '__main__':

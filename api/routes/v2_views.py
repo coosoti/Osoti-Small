@@ -26,7 +26,7 @@ def login_required(arg):
         """
         if request.headers.get('Authorization'):
             auth_token = request.headers.get('Authorization')
-            token = auth_token
+            token = auth_token.split(" ")[1]
             resp = User.decode_auth_token(token)
             user = User.query.filter_by(id=resp).first()
             if user:
@@ -76,7 +76,7 @@ def register():
         return response
     response = jsonify(
         status='error',
-        message="Please provide valid emailyth and password",
+        message="Please provide valid email and password",
         errors=is_valid
     )
     response.status_code = 400
@@ -102,7 +102,6 @@ def login():
 
     if user and bcrypt.check_password_hash(
         user.password, input_data['password']):
-        # auth_token = user.encode_auth_token(user.id).decode()
         auth_token = user.encode_auth_token(user.id)
         if auth_token:
             response = jsonify(
@@ -121,9 +120,9 @@ def login():
         return response
     response = jsonify({
         'status': 'error',
-        'message': 'Invalid email or password'
+        'message': 'User does not exist.'
     })
-    response.status_code = 400
+    response.status_code = 404
     return response
 
 
@@ -134,7 +133,7 @@ def logout():
     """Logs the user out by removing the token"""
     header = request.headers.get('Authorization')
     if header:
-        auth_token = header
+        auth_token = header.split(" ")[1]
     else:
         auth_token = ''
     if auth_token:
@@ -173,9 +172,10 @@ def logout():
 
 
 @v2.route('/meals', methods=['POST'])
+# @login_required
 @swag_from(CREATE_MEAL_DOCS)
 def v2_create_meal():
-    """Create a new meal
+    """Create a New Meal
     """
     input_data = request.get_json(force=True)
     is_valid = validate(input_data, CREATE_MEAL_RULES)
@@ -224,7 +224,7 @@ def v2_get_meals():
         response = jsonify({
             'status': 'ok',
             'message': 'There are ' + str(len(meals)) + ' meals',
-            'meals': meals
+            'data': [meals]
         })
         response.status_code = 200
         return response
@@ -240,15 +240,19 @@ def v2_get_meals():
 # @login_required
 # @admin_required
 def v2_get_meal(meal_id):
-    """Retrieves meal
-    """
+    """Retrieves meal"""
     meal = Meal.query.filter_by(id=meal_id).first()
  
     if meal:
-        response = jsonify({
+        obj = {
             'id': meal.id,
             'title': meal.title,
             'price': meal.price
+        }             
+        response = jsonify({
+            'status': 'ok',
+            'message': 'Meal datails',
+            'data': [obj]
         })
         response.status_code = 200
         return response
@@ -265,8 +269,7 @@ def v2_get_meal(meal_id):
 # @login_required
 # @admin_required
 def v2_update_meal(meal_id):
-    """Update a meal
-    """
+    """Update a meal"""
     input_data = request.get_json(force=True)
     meal = Meal.query.filter_by(id=meal_id).first()
     if meal:
@@ -280,12 +283,12 @@ def v2_update_meal(meal_id):
             return response
         meal.title= input_data['title'],
         meal.price = input_data['price']
-        if Meal.meal_already_exist(meal.title) is True:
-            response = jsonify(
-                status='error',
-                message='There is a meal with similar title in the database')
-            response.status_code = 400
-            return response
+        # if Meal.meal_already_exist(meal.title) is True:
+        #     response = jsonify(
+        #         status='error',
+        #         message='There is a meal with similar title in the database')
+        #     response.status_code = 400
+        #     return response
         db.session.commit()
         response = jsonify({
             'status': 'ok',
@@ -321,78 +324,136 @@ def v2_delete_meal(meal_id):
     return response    
 
 
+# @v2.route('/menu', methods=['POST'])
+# @swag_from(CREATE_MENU_DOCS)
+# def v2_create_menu():
+#     """Set up menu"""
+#     date = datetime.datetime.today().strftime('%Y-%m-%d')      
+#     new_menu = Menu(date=date)
+#     db.session.add(new_menu)
+#     db.session.commit()  
+#     input_data = request.get_json(force=True)
+#     selected_id = input_data['selected_id']
+#     if not selected_id.isdigit():
+#         response = jsonify({
+#             'status': 'error',
+#             'message': "Invalid meal id selected"
+#         })
+#         response.status_code = 400
+#         return response
+#     meal = Meal.query.filter_by(id=selected_id).first()
+#     if meal:
+#         new_menu.menu_meals.append(meal)
+#         db.session.commit()
+#         response = jsonify({
+#             'status': 'ok',
+#             'message': "Meal has been successfully added to the menu"
+#         })
+#         response.status_code = 201
+#         return response
+#     response = jsonify({
+#         'status': 'error',
+#         'message': "Meal selected not found"
+#     })
+#     response.status_code = 400
+#     return response
+
+# @v2.route('/menu', methods=['GET'])
+# @swag_from(GET_MENU_DOCS)
+# def v2_get_menu():
+#     """Get day's menu"""
+#     menu_meals = db.engine.execute("SELECT meal_id FROM menu_meals;")
+     
+#     meals = []
+#     for m_id in menu_meals:
+#         meals.append(list(m_id))
+#     meal_ids = list(itertools.chain(*meals)) 
+#     menu_meals = [Meal.query.filter_by(id=id).one() for id in meal_ids]
+#     if menu_meals:
+#         all_menu_meals = []   
+#         for meal in menu_meals:
+#             obj = {
+#                 'id': meal.id,
+#                 'title': meal.title,
+#                 'price': meal.price
+#             }
+#             all_menu_meals.append(obj)
+#         response = jsonify({
+#             'status': 'ok',
+#             'date': datetime.datetime.today().strftime('%Y-%m-%d'),
+#             'message': 'There are ' + str(len(menu_meals)) + ' meals',
+#             'meals': all_menu_meals
+#         })
+#         response.status_code = 200
+#         return response 
+#     response = jsonify(
+#         status='error',
+#         message='No menu found'
+#         # data=today_menu.meals
+#     )
+#     response.status_code = 400
+#     return response
+
 @v2.route('/menu', methods=['POST'])
 @swag_from(CREATE_MENU_DOCS)
 def v2_create_menu():
-    """Set day's menu
-    """
-    date = datetime.datetime.today().strftime('%Y-%m-%d')      
-    new_menu = Menu(date=date)
-    db.session.add(new_menu)
-    db.session.commit()  
-    input_data = request.get_json(force=True)
-    selected_id = input_data['selected_id']
-    print(type(selected_id))
-    if not isinstance(selected_id, str):
+    date = datetime.datetime.today().strftime('%Y-%m-%d')
+    menu = Menu.query.filter_by(date=date).first()
+    input_data = request.get_json(force=True)    
+    if menu:
         response = jsonify({
             'status': 'error',
-            'message': "Invalid meal id selected"
+            'message': "Today's Menu has already been created"
         })
         response.status_code = 400
         return response
-    meal = Meal.query.filter_by(id=selected_id).first() #[meal for meal in Database.meals if meal.get('id') == selected_id]
-    if meal:
-        new_menu.menu_meals.append(meal)
-        db.session.commit()
-        response = jsonify({
-            'status': 'ok',
-            'message': "Meal has been successfully added to the menu"
-        })
-        response.status_code = 201
-        return response
+
+    menu = Menu(date=date)
+    meal_ids = input_data['selected_ids']
+
+    for meal_id in  meal_ids:
+        meal = Meal.query.filter_by(id=meal_id).first()
+        menu.meals.append(meal)
+    db.session.add(menu)
+    db.session.commit()
     response = jsonify({
-        'status': 'error',
-        'message': "Meal selected not found"
+        'status': 'ok',
+        'message': "Menu have successfully been created"
     })
-    response.status_code = 400
+    response.status_code = 200
     return response
 
 @v2.route('/menu', methods=['GET'])
 @swag_from(GET_MENU_DOCS)
 def v2_get_menu():
-    """Get day's menu
-    """
-    menu_meals = db.engine.execute("SELECT meal_id FROM menu_meals;")
-     
+    """Get day's menu"""
+    date = datetime.datetime.today().strftime('%Y-%m-%d')
+    menu = Menu.query.filter_by(date=date).first()
     meals = []
-    for m_id in menu_meals:
-        meals.append(list(m_id))
-    meal_ids = list(itertools.chain(*meals)) 
-    menu_meals = [Meal.query.filter_by(id=id).one() for id in meal_ids]
-    if menu_meals:
-        all_menu_meals = []   
-        for meal in menu_meals:
+    if menu:       
+        for meal in menu.meals:
             obj = {
                 'id': meal.id,
                 'title': meal.title,
                 'price': meal.price
             }
-            all_menu_meals.append(obj)
+            meals.append(obj)   
         response = jsonify({
             'status': 'ok',
-            'date': datetime.datetime.today().strftime('%Y-%m-%d'),
-            'message': 'There are ' + str(len(menu_meals)) + ' meals',
-            'meals': all_menu_meals
+            'message': 'There are ' + str(len(meals)) + ' meals in this menu',
+            'data': date,
+            'data': [meals]
         })
         response.status_code = 200
-        return response 
+        return response
     response = jsonify(
         status='error',
-        message='No menu found'
-        # data=today_menu.meals
+        message='The are no meals'
     )
-    response.status_code = 400
-    return response
+    response.status_code = 204
+    return response    
+
+
 
 @v2.errorhandler(400)
 def bad_request(error):
