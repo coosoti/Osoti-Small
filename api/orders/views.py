@@ -14,10 +14,10 @@ orders = Blueprint('orders', __name__, url_prefix='/api/v2')
 
 
 @orders.route('/orders', methods=['POST'])
+@login_required
 @swag_from(MAKE_ORDER_DOCS)
 def make_order():
     """Make an order"""
-    date = datetime.datetime.today().strftime('%Y-%m-%d')
     menu = Menu.query.filter_by(date=date).first()
     input_data = request.get_json(force=True)
     selected_meal_id = input_data['selected_meal_id']
@@ -39,6 +39,7 @@ def make_order():
 
 
 @orders.route('/orders', methods=['GET'])
+@admin_required
 @swag_from(GET_ORDERS_DOCS)
 def get_orders():
     """Retrieves all orders by customers
@@ -76,10 +77,10 @@ def get_orders():
 
 
 @orders.route('/orders/<order_id>', methods=['GET'])
+@login_required
 @swag_from(GET_ORDER_DOCS)
 def get_order(order_id):
-    """get order details 
-    """
+    """Get order details"""
     order = Order.query.get_or_404(order_id)
     if order:
         meal = Meal.query.filter_by(id=order.meal_id).first()
@@ -104,6 +105,7 @@ def get_order(order_id):
 
 
 @orders.route('/orders/<order_id>', methods=['PUT'])
+@login_required
 @swag_from(UPDATE_ORDER_DOCS)
 def update_order(order_id):
     """Modify an Order"""
@@ -128,30 +130,3 @@ def update_order(order_id):
                        message='This order does not exist')
     response.status_code = 400
     return response
-
-
-@orders.errorhandler(400)
-def bad_request(error):
-    '''error handler for Bad request'''
-    return jsonify(dict(error='Bad request')), 400
-
-
-@orders.errorhandler(404)
-def page_not_found(error):
-    """error handler for 404
-    """
-    return jsonify(dict(error='Page not found')), 404
-
-
-@orders.errorhandler(405)
-def unauthorized(error):
-    """error handler for 405
-    """
-    return jsonify(dict(error='Method not allowed')), 405
-
-
-@orders.errorhandler(500)
-def internal_server_error(error):
-    """error handler for 500
-    """
-    return jsonify(dict(error='Internal server error')), 500

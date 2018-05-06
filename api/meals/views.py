@@ -11,7 +11,7 @@ meals = Blueprint('meals', __name__, url_prefix='/api/v2')
 
 
 @meals.route('/meals', methods=['POST'])
-# @login_required
+@admin_required
 @swag_from(CREATE_MEAL_DOCS)
 def create_meal():
     """Create a New Meal"""
@@ -45,7 +45,7 @@ def create_meal():
 
 @meals.route('/meals', methods=['GET'])
 @swag_from(GET_MEALS_DOCS)
-# @admin_required
+@admin_required
 def get_meals():
     """Retrieves all meal options"""
     data = Meal.get_all()
@@ -75,8 +75,7 @@ def get_meals():
 
 @meals.route('/meals/<meal_id>', methods=['GET'])
 @swag_from(GET_MEAL_DOCS)
-# @login_required
-# @admin_required
+@admin_required
 def get_meal(meal_id):
     """Retrieves meal detail"""
     meal = Meal.query.filter_by(id=meal_id).first()
@@ -104,8 +103,7 @@ def get_meal(meal_id):
 
 @meals.route('/meals/<meal_id>', methods=['PUT'])
 @swag_from(UPDATE_MEAL_DOCS)
-# @login_required
-# @admin_required
+@admin_required
 def update_meal(meal_id):
     """Update a meal"""
     input_data = request.get_json(force=True)
@@ -136,8 +134,7 @@ def update_meal(meal_id):
 
 @meals.route('/meals/<meal_id>', methods=['DELETE'])
 @swag_from(DELETE_MEAL_DOCS)
-# @login_required
-# @admin_required
+@admin_required
 def delete_meal(meal_id):
     """Delete meal"""
     meal = Meal.query.filter_by(id=meal_id).first()
@@ -153,29 +150,3 @@ def delete_meal(meal_id):
                        message="This meal does not exist or you do not have the permission to delete it")
     response.status_code = 400
     return response
-
-
-@meals.errorhandler(400)
-def bad_request(error):
-    '''error handler for Bad request'''
-    return jsonify(dict(error='Bad request')), 400 
-
-@meals.errorhandler(404)
-def page_not_found(error):
-    """error handler for 404
-    """
-    return jsonify(dict(error='Page not found')), 404
-
-
-@meals.errorhandler(405)
-def unauthorized(error):
-    """error handler for 405
-    """
-    return jsonify(dict(error='Method not allowed')), 405
-
-
-@meals.errorhandler(500)
-def internal_server_error(error):
-    """error handler for 500
-    """
-    return jsonify(dict(error='Internal server error')), 500

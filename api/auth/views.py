@@ -101,7 +101,7 @@ def login():
 
 
 @auth.route('/auth/logout', methods=['POST'])
-# @login_required
+@login_required
 @swag_from(SIGNOUT_DOCS)
 def logout():
     """Logs the user out"""
@@ -143,28 +143,3 @@ def logout():
     })
     response.status_code = 403
     return response
-
-@auth.errorhandler(400)
-def bad_request(error):
-    '''error handler for Bad request'''
-    return jsonify(dict(error='Bad request')), 400 
-
-@auth.errorhandler(404)
-def page_not_found(error):
-    """error handler for 404
-    """
-    return jsonify(dict(error='Page not found')), 404
-
-
-@auth.errorhandler(405)
-def unauthorized(error):
-    """error handler for 405
-    """
-    return jsonify(dict(error='Method not allowed')), 405
-
-
-@auth.errorhandler(500)
-def internal_server_error(error):
-    """error handler for 500
-    """
-    return jsonify(dict(error='Internal server error')), 500

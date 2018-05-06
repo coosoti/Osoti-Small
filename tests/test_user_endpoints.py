@@ -113,7 +113,6 @@ class TestUserEndpoint(MainTestCase):
                 )
             )
             data = json.loads(response.data.decode())
-            # self.assertTrue(data['message'] == 'You have successfully logged out')
             self.assertEqual(response.status_code, 200)
 
 if __name__ == '__main__':

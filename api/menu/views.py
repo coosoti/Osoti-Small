@@ -13,6 +13,7 @@ menu = Blueprint('menu', __name__, url_prefix='/api/v2')
 
 
 @menu.route('/menu', methods=['POST'])
+@admin_required
 @swag_from(CREATE_MENU_DOCS)
 def create_menu():
     """Create Menu"""
@@ -59,6 +60,7 @@ def create_menu():
 
 
 @menu.route('/menu', methods=['GET'])
+@login_required
 @swag_from(GET_MENU_DOCS)
 def v2_get_menu():
     """Get Menu"""
@@ -86,28 +88,3 @@ def v2_get_menu():
     )
     response.status_code = 204
     return response
-
-@menu.errorhandler(400)
-def bad_request(error):
-    '''error handler for Bad request'''
-    return jsonify(dict(error='Bad request')), 400 
-
-@menu.errorhandler(404)
-def page_not_found(error):
-    """error handler for 404
-    """
-    return jsonify(dict(error='Page not found')), 404
-
-
-@menu.errorhandler(405)
-def unauthorized(error):
-    """error handler for 405
-    """
-    return jsonify(dict(error='Method not allowed')), 405
-
-
-@menu.errorhandler(500)
-def internal_server_error(error):
-    """error handler for 500
-    """
-    return jsonify(dict(error='Internal server error')), 500    
