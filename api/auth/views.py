@@ -112,7 +112,7 @@ def logout():
         auth_token = ''
     if auth_token:
         user_id = User.decode_token(auth_token)
-        if isinstance(user_id, int):
+        if not isinstance(user_id, str):
             forbidden = Forbidden(token=auth_token)
             try:
                 db.session.add(forbidden)
