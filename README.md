@@ -1,11 +1,19 @@
 [![codecov](https://codecov.io/gh/coosoti/Osoti-Small/branch/master/graph/badge.svg)](https://codecov.io/gh/coosoti/Osoti-Small) [![Build Status](https://travis-ci.org/coosoti/Osoti-Small.svg?branch=feature-order-meal-157333125)](https://travis-ci.org/coosoti/Osoti-Small)
 # Osoti-Small Book-A-Meal Application
 
-### Project Introduction
+## Project Introduction
 
 Book-A-Meal is an application that allows customers to make food orders and helps the food vendor know what the customers want to eat.
 
-**TL**;**DR** Check the API docs at [heroku link] 
+Check the API docs at [this link](https://osoti-small.herokuapp.com/docs#/) 
+
+### P.S
+**Note**: The UI for the project is hosted on github. [See](https://coosoti.github.io/Osoti-Small/).
+
+**Note**: The project manager in use is PivotalTracker.[See](https://www.pivotaltracker.com/n/projects/2165720)
+
+## Installation
+
 
 ### Set up the environment
 
@@ -64,8 +72,10 @@ Add environment variable settings:
 * Create a file name it `.env` with the following contents
 
 ```con
+MODE=development
 SECRET_KEY=secret_key
 DEBUG=True
+DATABASE_URL=postgresql://username:password@localhost:5432/database_name
 ```
 
 **OR**
@@ -78,13 +88,29 @@ SET SECRET_KEY=secret_key
 ```
 
 ```powershell
+SET MODE=development
+```
+
+```powershell
+SET DEBUG=True
+```
+
+```powershell
 SET DEBUG=True
 ```
 
 On Linux
 
 ```sh
+export MODE=development
+```
+
+```sh
 export SECRET_KEY=secret_key
+```
+
+```sh
+export DATABASE_URL=postgresql://username:password@localhost:5432/database_dev
 ```
 
 ```sh
@@ -93,10 +119,25 @@ export DEBUG=True
 
 #### Run the application
 
-To run the tests, use `nosetests` or any other test runner e.g. pytest   
+To run the tests, use this command after creating these postgres tables   
 
-```sh
-nosetests -v
+```sh 
+database_dev --> for development
+database_test -->for testing
+```
+
+```sh  
+python manage.py test 
+```
+
+```sh  
+python manage.py test 
+```
+
+OR
+
+```sh  
+python manage.py cov 
 ```
 
 Then run the app
@@ -104,6 +145,10 @@ Then run the app
 ```sh
 python run.py
 ```
+
+```sh
+python manage.py runserver
+``` 
 
 ### View API Documentation
 
@@ -140,52 +185,6 @@ View the API Documentation in a browser via: http://127.0.0.1:5000/api/v1
 **`PUT /api/v1/orders/<orders_id>`** *Update order details*
 
 
-## Author
-
-Charles Osoti
-
-
-## License
-
-MIT License
-
-# Book-A-Meal
-
-Book-A-Meal is an application that allows customers to make food orders and helps the food vendor know what the customers want to eat.
-
-## Getting Started
-
-### Introduction
-
-This is the first part of the project which is the client-side built with HTML, CSS and vanilla javascript.
-
-**Note**: The project does not include any open source or proprietary css frameworks or javascript libraries.
-
-**Note**: The UI for the project is hosted on github. [See](https://coosoti.github.io/Osoti-Small/).
-
-**Note**: The project manager in use is PivotalTracker.[See](https://www.pivotaltracker.com/n/projects/2165720)
-
-### Installation
-
-Ensure you have an browser(any browser) installed on your workstation.
-
-### Try it out
-
-Follow the link for a [demo](https://coosoti.github.io/Osoti-Small/).
-
-### Screenshots
-
-![Landing Page](/screenshots/landing.png)
-![Sign Up Page](/screenshots/signup.png)
-![Sign In Page](/screenshots/login.png)
-![Admin Dashboard](/screenshots/dashboard.png)
-![Edit Menu Page](/screenshots/editmenu.png)
-![Set Menu Page](/screenshots/set-menu.png)
-![Make Order Page](/screenshots/order.png)
-
-### Screencasts
-
-![Landing Page](/screencasts/demo.gif)
 
 ### Author
 
