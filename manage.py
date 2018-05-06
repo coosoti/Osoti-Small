@@ -67,7 +67,5 @@ def drop_db():
     """Drops the db tables."""
     db.drop_all()
 
-
-
 if __name__ == '__main__':
     manager.run()
