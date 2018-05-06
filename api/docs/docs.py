@@ -6,16 +6,16 @@ CREATE_MEAL_DOCS = {
     ],
     "description": "Meal Creation",
     "parameters": [
-        # {
-        #     "name": "Authorization",
-        #     "in": "header",
-        #     "description": "Authorization token",
-        #     "schema": {
-        #         "type": "string",
-        #         "format": "uuid",
-        #     },
-        #     "required": True,
-        # },
+        {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Authorization token",
+            "schema": {
+                "type": "string",
+                "format": "uuid",
+            },
+            "required": True,
+        },
         {
             "name": "body",
             "in": "body",
@@ -65,18 +65,18 @@ GET_MEALS_DOCS = {
         "Meal"
     ],
     "description": "Get a list of meals created by authenticated caterer",
-    # "parameters": [
-    #     {
-    #         "name": "Authorization",
-    #         "in": "header",
-    #         "description": "Authorization token",
-    #         "schema": {
-    #             "type": "string",
-    #             "format": "uuid",
-    #         },
-    #         "required": True,
-    #     }
-    # ],
+    "parameters": [
+        {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Authorization token",
+            "schema": {
+                "type": "string",
+                "format": "uuid",
+            },
+            "required": True,
+        }
+    ],
     "responses": {
         "200": {
             "description": "Return response status and message and a list of meals by the caterer",
@@ -132,16 +132,16 @@ GET_MEAL_DOCS = {
             },
             "required": True,
         },
-        # {
-        #     "name": "Authorization",
-        #     "in": "header",
-        #     "description": "Authorization token",
-        #     "schema": {
-        #         "type": "string",
-        #         "format": "uuid",
-        #     },
-        #     "required": True,
-        # }
+        {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Authorization token",
+            "schema": {
+                "type": "string",
+                "format": "uuid",
+            },
+            "required": True,
+        }
     ],
     "responses": {
         "200": {
@@ -188,16 +188,16 @@ UPDATE_MEAL_DOCS = {
     ],
     "description": "Update meal details by the authenticated caterer",
     "parameters": [
-        # {
-        #     "name": "Authorization",
-        #     "in": "header",
-        #     "description": "Authorization token",
-        #     "schema": {
-        #         "type": "string",
-        #         "format": "uuid",
-        #     },
-        #     "required": True,
-        # },
+        {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Authorization token",
+            "schema": {
+                "type": "string",
+                "format": "uuid",
+            },
+            "required": True,
+        },
         {
             "name": "meal_id",
             "in": "path",
@@ -255,16 +255,16 @@ DELETE_MEAL_DOCS = {
     ],
     "description": "Meal can only be deleted by authenticated caterer",
     "parameters": [
-        # {
-        #     "name": "Authorization",
-        #     "in": "header",
-        #     "description": "Authorization token",
-        #     "schema": {
-        #         "type": "string",
-        #         "format": "uuid",
-        #     },
-        #     "required": True,
-        # },
+        {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Authorization token",
+            "schema": {
+                "type": "string",
+                "format": "uuid",
+            },
+            "required": True,
+        },
         {
             "name": "meal_id",
             "in": "path",
@@ -450,24 +450,24 @@ SIGNOUT_DOCS = {
     }
 }
 
-# menu
+
 CREATE_MENU_DOCS = {
     "tags": [
         "Menu"
     ],
     "description": "Menu Creation",
     "parameters": [
-        # {
-        #     "name": "Authorization",
-        #     "in": "header",
-        #     "description": "Authorization token",
-        #     "schema": {
-        #         "type": "string",
-        #         "format": "uuid",
-        #     },
-        #     "required": True,
-        # }
         {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Authorization token",
+            "schema": {
+                "type": "string",
+                "format": "uuid",
+            },
+            "required": True,
+            },
+            {
             "name": "body",
             "in": "body",
             "description": "meal id",
@@ -511,16 +511,16 @@ GET_MENU_DOCS = {
     ],
     "description": "Get a list of menu created by authenticated caterer",
     "parameters": [
-        # {
-        #     "name": "Authorization",
-        #     "in": "header",
-        #     "description": "Authorization token",
-        #     "schema": {
-        #         "type": "string",
-        #         "format": "uuid",
-        #     },
-        #     "required": True,
-        # }
+        {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Authorization token",
+            "schema": {
+                "type": "string",
+                "format": "uuid",
+            },
+            "required": True,
+        }
     ],
     "responses": {
         "200": {
@@ -571,16 +571,16 @@ MAKE_ORDER_DOCS = {
     ],
     "description": "Get a list of menu created by authenticated caterer",
     "parameters": [
-        # {
-        #     "name": "Authorization",
-        #     "in": "header",
-        #     "description": "Authorization token",
-        #     "schema": {
-        #         "type": "string",
-        #         "format": "uuid",
-        #     },
-        #     "required": True,
-        # }
+        {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Authorization token",
+            "schema": {
+                "type": "string",
+                "format": "uuid",
+            },
+            "required": True,
+        },
         {
             "name": "body",
             "in": "body",
@@ -646,16 +646,16 @@ UPDATE_ORDER_DOCS = {
     ],
     "description": "Update order details by the authenticated customer",
     "parameters": [
-        # {
-        #     "name": "Authorization",
-        #     "in": "header",
-        #     "description": "Authorization token",
-        #     "schema": {
-        #         "type": "string",
-        #         "format": "uuid",
-        #     },
-        #     "required": True,
-        # },
+        {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Authorization token",
+            "schema": {
+                "type": "string",
+                "format": "uuid",
+            },
+            "required": True,
+        },
         {
             "name": "order_id",
             "in": "path",
@@ -708,18 +708,18 @@ GET_ORDERS_DOCS = {
         "Order"
     ],
     "description": "Get a list of orders made by authenticated customers",
-    # "parameters": [
-    #     {
-    #         "name": "Authorization",
-    #         "in": "header",
-    #         "description": "Authorization token",
-    #         "schema": {
-    #             "type": "string",
-    #             "format": "uuid",
-    #         },
-    #         "required": True,
-    #     }
-    # ],
+    "parameters": [
+        {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Authorization token",
+            "schema": {
+                "type": "string",
+                "format": "uuid",
+            },
+            "required": True,
+        }
+    ],
     "responses": {
         "200": {
             "description": "Return response status and message and a list of orders",
@@ -765,16 +765,16 @@ GET_ORDER_DOCS = {
     ],
     "description": "Get order made by authenticated customers",
     "parameters": [
-    #     {
-    #         "name": "Authorization",
-    #         "in": "header",
-    #         "description": "Authorization token",
-    #         "schema": {
-    #             "type": "string",
-    #             "format": "uuid",
-    #         },
-    #         "required": True,
-    #     }
+        {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Authorization token",
+            "schema": {
+                "type": "string",
+                "format": "uuid",
+            },
+            "required": True,
+        },
         {
             "name": "order_id",
             "in": "path",

@@ -1,17 +1,15 @@
-from sqlalchemy.dialects.postgresql.base import UUID
-from flask_sqlalchemy import SQLAlchemy
-import uuid
 import jwt
 import datetime
 
 from api import app, db, bcrypt
-# db = SQLAlchemy()
 
 
 menu_meals = db.Table('menu_meals',
-    db.Column('menu_id', db.Integer, db.ForeignKey('menus.id')),
-    db.Column('meal_id', db.Integer, db.ForeignKey('meals.id'))
-)
+                      db.Column('menu_id', db.Integer,
+                                db.ForeignKey('menus.id')),
+                      db.Column('meal_id', db.Integer,
+                                db.ForeignKey('meals.id'))
+                      )
 
 
 class Meal(db.Model):
@@ -24,13 +22,11 @@ class Meal(db.Model):
     title = db.Column(db.String(100))
     price = db.Column(db.Float)
 
-
     def __init__(self, title, price):
         """initialize with title and price.
         """
         self.title = title
-        self.price = price 
-
+        self.price = price
 
     def save(self):
         db.session.add(self)
@@ -40,10 +36,10 @@ class Meal(db.Model):
     def meal_already_exist(cls, title):
         """Check if the meal to be added or updated already exists
         """
-        meal = Meal.query.filter_by(title = title).first()
+        meal = Meal.query.filter_by(title=title).first()
         if meal:
             return True
-        return False    
+        return False
 
     @staticmethod
     def get_all():
@@ -58,21 +54,20 @@ class Meal(db.Model):
 
 
 class Menu(db.Model):
-    """Menu model
-    """
+    """Menu model"""
 
     __tablename__ = 'menus'
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     date = db.Column(db.DateTime)
     meals = db.relationship('Meal', secondary=menu_meals,
-        backref=db.backref('meals', lazy=True, uselist=True))
+                            backref=db.backref('meals', lazy=True, uselist=True))
 
     def __init__(self, date):
         """Initializes this class
         """
-        self.date = date        
-        
+        self.date = date
+
     @classmethod
     def set_menu(self):
         """Set menu and store it into the main database
@@ -81,7 +76,35 @@ class Menu(db.Model):
         db.session.commit()
 
     def __repr__(self):
-        return "<Menu: {}>".format(self.menu_meals) 
+        return "<Menu: {}>".format(self.menu_meals)
+
+
+class Order(db.Model):
+    """ Order Model for storing user orders related details"""
+
+    __tablename__ = "orders"
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    date_created = db.Column(db.DateTime, default=db.func.current_timestamp())
+    date_modified = db.Column(
+        db.DateTime, default=db.func.current_timestamp(),
+        onupdate=db.func.current_timestamp())
+    meal_id = db.Column(db.String(5))
+
+    def __init__(self, meal_id):
+        """initialize with meal_id."""
+        self.meal_id = meal_id
+
+    def save(self):
+        db.session.add(self)
+        db.session.commit()
+
+    @staticmethod
+    def get_all():
+        return Order.query.all()
+
+    def __repr__(self):
+        return "<Order: {}>".format(self.date_created)
 
 
 class User(db.Model):
@@ -105,14 +128,12 @@ class User(db.Model):
         self.registered_on = datetime.datetime.now()
         self.designation = designation
 
-    def encode_auth_token(self, user_id):
-        """
-        Generates the Auth Token
-        :return: string
-        """
+    def encode_token(self, user_id):
+        """Generates the random auth_token string"""
         try:
             payload = {
-                'exp': datetime.datetime.utcnow() + datetime.timedelta(days=0, seconds=120),
+                'exp': datetime.datetime.utcnow() +
+                datetime.timedelta(days=0, seconds=900),
                 'iat': datetime.datetime.utcnow(),
                 'sub': user_id
             }
@@ -125,17 +146,13 @@ class User(db.Model):
             return e
 
     @staticmethod
-    def decode_auth_token(auth_token):
-        """
-        Validates the auth token
-        :param auth_token:
-        :return: integer|string
-        """
+    def decode_token(auth_token):
+        """Validate the token"""
         try:
             payload = jwt.decode(auth_token, app.config.get('SECRET_KEY'))
-            is_blacklisted_token = BlacklistToken.check_blacklist(auth_token)
-            if is_blacklisted_token:
-                return 'Token blacklisted. Please log in again.'
+            is_forbidden = Forbidden.check_forbidden(auth_token)
+            if is_forbidden:
+                return 'Token forbidden. Please log in again.'
             else:
                 return payload['sub']
         except jwt.ExpiredSignatureError:
@@ -144,30 +161,27 @@ class User(db.Model):
             return 'Invalid token. Please log in again.'
 
 
-class BlacklistToken(db.Model):
+class Forbidden(db.Model):
+    """Forbidden class for storing forbidden
     """
-    Token Model for storing JWT tokens
-    """
-    __tablename__ = 'blacklist_tokens'
+    __tablename__ = 'forbidden_tokens'
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     token = db.Column(db.String(500), unique=True, nullable=False)
-    blacklisted_on = db.Column(db.DateTime, nullable=False)
+    date_forbidden = db.Column(db.DateTime, nullable=False)
 
     def __init__(self, token):
         self.token = token
-        self.blacklisted_on = datetime.datetime.now()
+        self.date_forbidden = datetime.datetime.now()
 
     def __repr__(self):
         return '<id: token: {}'.format(self.token)
 
     @staticmethod
-    def check_blacklist(auth_token):
-        # check whether auth token has been blacklisted
-        res = BlacklistToken.query.filter_by(token=str(auth_token)).first()
+    def check_forbidden(auth_token):
+        """check whether auth token has been forbidden"""
+        res = Forbidden.query.filter_by(token=str(auth_token)).first()
         if res:
             return True
         else:
-            return False           
-
-         
+            return False

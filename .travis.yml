@@ -22,5 +22,6 @@ before_script:
 script:
   - python manage.py cov
 
+
 after_success:
-  "codecov"
+  - bash <(curl -s https://codecov.io/bash)
