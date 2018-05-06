@@ -14,7 +14,6 @@ class Config(object):
 class DevelopmentConfig(Config):
     """Configurations for Development."""
     SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL')
-    # SQLALCHEMY_DATABASE_URI ="postgresql://postgres:28201903@localhost:5432/osotismall"
     DEBUG = True
 
 

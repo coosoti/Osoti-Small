@@ -9,6 +9,7 @@ service:
 before_install:
   - export MODE="testing"
   - export SECRET_KEY="charlesosoti"
+  - export DATABASE_URL=""postgresql://username:password@localhost/test"
 
 install:
   - pip install -r requirements.txt
