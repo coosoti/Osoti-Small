@@ -1,4 +1,4 @@
-[![codecov](https://codecov.io/gh/coosoti/Osoti-Small/branch/master/graph/badge.svg)](https://codecov.io/gh/coosoti/Osoti-Small) [![Build Status](https://travis-ci.org/coosoti/Osoti-Small.svg?branch=feature-order-meal-157333125)](https://travis-ci.org/coosoti/Osoti-Small)
+[![codecov](https://codecov.io/gh/coosoti/Osoti-Small/branch/master/graph/badge.svg)](https://codecov.io/gh/coosoti/Osoti-Small) [![Build Status](https://travis-ci.org/coosoti/Osoti-Small.svg?branch=feature-order-meal-157333125)](https://travis-ci.org/coosoti/Osoti-Small)[![Maintainability](https://api.codeclimate.com/v1/badges/ed4591c861e746bda4cd/maintainability)](https://codeclimate.com/github/coosoti/Osoti-Small/maintainability)[![Codacy Badge](https://api.codacy.com/project/badge/Grade/6fffebf6668e44a1b7a7dba7b77d71c7)](https://www.codacy.com/app/coosoti/Osoti-Small?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=coosoti/Osoti-Small&amp;utm_campaign=Badge_Grade)
 # Osoti-Small Book-A-Meal Application
 
 ## Project Introduction
