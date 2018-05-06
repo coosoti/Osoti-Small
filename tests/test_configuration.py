@@ -1,5 +1,5 @@
 import unittest
-
+import os 
 from flask import current_app
 from flask_testing import TestCase
 from instance.config import app_config
@@ -15,7 +15,7 @@ class TestDevelopmentConfig(TestCase):
         self.assertTrue(app.config['DEBUG'] is True)
         self.assertFalse(current_app is None)
         self.assertTrue(
-            app.config['SQLALCHEMY_DATABASE_URI'] == 'postgresql://postgres:28201903@localhost:5432/osotismall'
+            app.config['SQLALCHEMY_DATABASE_URI'] == os.getenv('DATABASE_URL')
         )
 
 
