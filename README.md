@@ -1,4 +1,9 @@
+[![codecov](https://codecov.io/gh/coosoti/Osoti-Small/branch/master/graph/badge.svg)](https://codecov.io/gh/coosoti/Osoti-Small) [![Build Status](https://travis-ci.org/coosoti/Osoti-Small.svg?branch=feature-order-meal-157333125)](https://travis-ci.org/coosoti/Osoti-Small)
 # Osoti-Small Book-A-Meal Application
+
+### Project Introduction
+
+Book-A-Meal is an application that allows customers to make food orders and helps the food vendor know what the customers want to eat.
 
 **TL**;**DR** Check the API docs at [heroku link] 
 
