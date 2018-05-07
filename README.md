@@ -163,33 +163,33 @@ View the API Documentation in a browser via: http://127.0.0.1:5000/docs#/
 
 #### API Endpoints
 
-**`POST /api/v1/auth/register`** *User registration*
+**`POST /api/v2/auth/register`** *User registration*
 
-**`POST /api/v1/auth/login`** *User login*
+**`POST /api/v2/auth/login`** *User login*
 
-**`POST /api/v1/auth/logout`** *User logout*
+**`POST /api/v2/auth/logout`** *User logout*
 
-**`GET /api/v1/meals`** *Get all the meals*
+**`GET /api/v2/meals`** *Get all the meals*
 
-**`POST /api/v1/meals`** *Create meal*
+**`POST /api/v2/meals`** *Create meal*
 
-**`PUT /api/v1/meals/<meal_id>`** *Update meal details*
+**`PUT /api/v2/meals/<meal_id>`** *Update meal details*
 
-**`DELETE /api/v1/meals/<meal_id>`** *Delete meal*
+**`DELETE /api/v2/meals/<meal_id>`** *Delete meal*
 
-**`POST /api/v1/menu`** *Create menu*
+**`POST /api/v2/menu`** *Create menu*
 
-**`GET /api/v1/menu`** *Get menu*
+**`GET /api/v2/menu`** *Get menu*
 
-**`GET /api/v1/menu`** *Get menu*
+**`GET /api/v2/menu`** *Get menu*
 
-**`POST /api/v1/orders`** *Make an order*
+**`POST /api/v2/orders`** *Make an order*
 
-**`GET /api/v1/orders`** *Get orders*
+**`GET /api/v2/orders`** *Get orders*
 
-**`GET /api/v1/orders/<orders_id>`** *Get order details*
+**`GET /api/v2/orders/<orders_id>`** *Get order details*
 
-**`PUT /api/v1/orders/<orders_id>`** *Update order details*
+**`PUT /api/v2/orders/<orders_id>`** *Update order details*
 
 
 
