@@ -1,7 +1,8 @@
+"""Views for Order Class"""
 import datetime
 from flask import Blueprint, request, jsonify
 
-from ..models.models import db, Meal, Menu, User, Order
+from ..models.models import db, Meal, Menu, Order
 
 from ..docs.docs import (MAKE_ORDER_DOCS, GET_ORDERS_DOCS,
                          GET_ORDER_DOCS, UPDATE_ORDER_DOCS)

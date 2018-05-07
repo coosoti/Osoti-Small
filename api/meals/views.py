@@ -1,11 +1,12 @@
-from flask import Blueprint, request, make_response, jsonify
+"""Meal Views"""
+from flask import Blueprint, request, jsonify
 from ..models.models import db, Meal
 from ..docs.docs import (
     CREATE_MEAL_DOCS, GET_MEALS_DOCS,
     GET_MEAL_DOCS, UPDATE_MEAL_DOCS, DELETE_MEAL_DOCS)
 from flasgger.utils import swag_from
 from ..helpers.input_utils import validate, CREATE_MEAL_RULES
-from ..helpers.decorators import login_required, admin_required
+from ..helpers.decorators import admin_required
 
 meals = Blueprint('meals', __name__, url_prefix='/api/v2')
 
@@ -126,8 +127,8 @@ def update_meal(meal_id):
         })
         response.status_code = 202
         return response
-    response = jsonify(status='error',
-                       message='This meal does not exist or you do have the permission to edit it')
+    response = jsonify(status='error', 
+        message='This meal does not exist or you do have the permission to edit it')
     response.status_code = 400
     return response
 

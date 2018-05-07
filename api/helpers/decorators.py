@@ -1,5 +1,5 @@
-import datetime
-from flask import Blueprint, request, jsonify
+"""decorators"""
+from flask import request, jsonify
 from functools import wraps
 
 from ..models.models import User
@@ -49,5 +49,5 @@ def admin_required(arg):
             'message': "Unauthorized. Please Login"
         })
         response.status_code = 403
-        return response    
+        return response
     return wrap

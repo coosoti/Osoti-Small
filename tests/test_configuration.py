@@ -1,10 +1,11 @@
 import unittest
-import os 
+import os
 from flask import current_app
 from flask_testing import TestCase
 from instance.config import app_config
 
 from api import app
+
 
 class TestDevelopmentConfig(TestCase):
     def create_app(self):
@@ -30,10 +31,7 @@ class TestTestingConfig(TestCase):
             app.config['SQLALCHEMY_DATABASE_URI'] == 'postgresql://postgres:28201903@localhost:5432/test'
         )
 
+
 def test_app_is_development(self):
-    self.assertFalse(app.config['SECRET_KEY'] is 'my_precious')
     self.assertTrue(app.config['DEBUG'] is True)
     self.assertFalse(current_app is None)
-    self.assertTrue(
-        app.config['SQLALCHEMY_DATABASE_URI'] == 'postgresql://postgres:@localhost/flask_jwt_auth'
-    )

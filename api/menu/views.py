@@ -1,7 +1,6 @@
+"""Views for menu"""
 import datetime
-from flask import Blueprint, request, make_response, jsonify
-from functools import wraps
-
+from flask import Blueprint, request, jsonify
 from ..models.models import db, Meal, Menu
 from ..docs.docs import CREATE_MENU_DOCS, GET_MENU_DOCS
 from ..helpers.decorators import login_required, admin_required
@@ -9,10 +8,10 @@ from flasgger.utils import swag_from
 
 date = datetime.datetime.today().strftime('%Y-%m-%d')
 
-menu = Blueprint('menu', __name__, url_prefix='/api/v2')
+menus = Blueprint('menu', __name__, url_prefix='/api/v2')
 
 
-@menu.route('/menu', methods=['POST'])
+@menus.route('/menu', methods=['POST'])
 @admin_required
 @swag_from(CREATE_MENU_DOCS)
 def create_menu():
@@ -59,7 +58,7 @@ def create_menu():
     return response
 
 
-@menu.route('/menu', methods=['GET'])
+@menus.route('/menu', methods=['GET'])
 @login_required
 @swag_from(GET_MENU_DOCS)
 def v2_get_menu():
@@ -77,7 +76,7 @@ def v2_get_menu():
         response = jsonify({
             'status': 'ok',
             'message': 'There are ' + str(len(meals)) + ' meals in this menu',
-            'data': date,
+            'date': date,
             'data': [meals]
         })
         response.status_code = 200

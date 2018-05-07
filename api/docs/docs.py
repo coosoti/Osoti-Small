@@ -1,5 +1,4 @@
-"""Book-A-Meal Version 1.0 Documentation
-"""
+"""Book-A-Meal Version 1.0 Documentation"""
 CREATE_MEAL_DOCS = {
     "tags": [
         "Meal"
@@ -12,7 +11,7 @@ CREATE_MEAL_DOCS = {
             "description": "Authorization token",
             "schema": {
                 "type": "string",
-                "format": "uuid",
+                "format": "bytes",
             },
             "required": True,
         },
@@ -72,7 +71,7 @@ GET_MEALS_DOCS = {
             "description": "Authorization token",
             "schema": {
                 "type": "string",
-                "format": "uuid",
+                "format": "bytes",
             },
             "required": True,
         }
@@ -97,7 +96,7 @@ GET_MEALS_DOCS = {
                             "properties": {
                                 "id": {
                                     "type": "string",
-                                    "example": "a69de3743ae24ac89dc3dc2e54c91b3b"
+                                    "example": "int"
                                 },
                                 "title": {
                                     "type": "string",
@@ -127,8 +126,8 @@ GET_MEAL_DOCS = {
             "in": "path",
             "description": "meal id",
             "schema": {
-                "type": "string",
-                "format": "uuid",
+                "type": "int",
+                "format": "int",
             },
             "required": True,
         },
@@ -138,7 +137,7 @@ GET_MEAL_DOCS = {
             "description": "Authorization token",
             "schema": {
                 "type": "string",
-                "format": "uuid",
+                "format": "bytes",
             },
             "required": True,
         }
@@ -163,11 +162,11 @@ GET_MEAL_DOCS = {
                             "properties": {
                                 "id": {
                                     "type": "string",
-                                    "example": "a69de3743ae24ac89dc3dc2e54c91b3b"
+                                    "example": "int"
                                 },
                                 "title": {
                                     "type": "string",
-                                    "example": "The First Meal"
+                                    "example": "Samaki"
                                 },
                                 "price": {
                                     "type": "float",
@@ -194,7 +193,7 @@ UPDATE_MEAL_DOCS = {
             "description": "Authorization token",
             "schema": {
                 "type": "string",
-                "format": "uuid",
+                "format": "bytes",
             },
             "required": True,
         },
@@ -261,7 +260,7 @@ DELETE_MEAL_DOCS = {
             "description": "Authorization token",
             "schema": {
                 "type": "string",
-                "format": "uuid",
+                "format": "int",
             },
             "required": True,
         },
@@ -353,6 +352,10 @@ SIGNUP_DOCS = {
                         "type": "string",
                         "example": "You have been successfully registered"
                     },
+                    "auth_token": {
+                        "type": "string",
+                        "example": "auth_token....."
+                    },
                 }
             }
         }
@@ -403,9 +406,9 @@ SIGNIN_DOCS = {
                         "type": "string",
                         "example": "You have been successfully logged in"
                     },
-                    "access_token": {
+                    "auth_token": {
                         "type": "string",
-                        "example": "token....."
+                        "example": "auth_token....."
                     },
                 }
             }
@@ -425,7 +428,7 @@ SIGNOUT_DOCS = {
             "description": "Authorization token",
             "schema": {
                 "type": "string",
-                "format": "uuid",
+                "format": "bytes",
             },
             "required": True,
         }
@@ -463,11 +466,11 @@ CREATE_MENU_DOCS = {
             "description": "Authorization token",
             "schema": {
                 "type": "string",
-                "format": "uuid",
+                "format": "bytes",
             },
             "required": True,
-            },
-            {
+        },
+        {
             "name": "body",
             "in": "body",
             "description": "meal id",
@@ -475,12 +478,12 @@ CREATE_MENU_DOCS = {
             "schema": {
                 "id": "menu_set",
                 "required": [
-                    "selected_id"
+                    "selected_ids"
                 ],
                 "properties": {
                     "selected_id": {
-                        "type": "uuid",
-                        "example": "a69de3743ae24ac89dc3dc2e54c91b3b"
+                        "type": "int",
+                        "example": ["1"]
                     },
                 }
             }
@@ -517,7 +520,7 @@ GET_MENU_DOCS = {
             "description": "Authorization token",
             "schema": {
                 "type": "string",
-                "format": "uuid",
+                "format": "bytes",
             },
             "required": True,
         }
@@ -577,7 +580,7 @@ MAKE_ORDER_DOCS = {
             "description": "Authorization token",
             "schema": {
                 "type": "string",
-                "format": "uuid",
+                "format": "bytes",
             },
             "required": True,
         },
@@ -589,13 +592,12 @@ MAKE_ORDER_DOCS = {
             "schema": {
                 "id": "menu_set",
                 "required": [
-                    "ids"
+                    "selected_meal_id"
                 ],
                 "properties": {
-                    "ids": {
-                        "type": "uuid",
-                        "example": ["a69de3743ae24ac89dc3dc2e54c91b3b",
-                                    "a69de3743ae24ac89dc3dc2e54c91b3b"]
+                    "id": {
+                        "type": "int",
+                        "example": "1"
                     },
                 }
             }
@@ -615,13 +617,13 @@ MAKE_ORDER_DOCS = {
                         "type": "string",
                         "example": "You have 1 meal"
                     },
-                    "my orders ": {
+                    "orders ": {
                         "type": "array",
                         "items": {
                             "properties": {
                                 "id": {
                                     "type": "string",
-                                    "example": "a69de3743ae24ac89dc3dc2e54c91b3b"
+                                    "example": "1"
                                 },
                                 "title": {
                                     "type": "string",
@@ -652,7 +654,7 @@ UPDATE_ORDER_DOCS = {
             "description": "Authorization token",
             "schema": {
                 "type": "string",
-                "format": "uuid",
+                "format": "bytes",
             },
             "required": True,
         },
@@ -671,12 +673,12 @@ UPDATE_ORDER_DOCS = {
             "schema": {
                 "id": "update_order_data",
                 "required": [
-                    "selected_id",
+                    "selected_meal_id",
                 ],
                 "properties": {
-                    "selected_id": {
-                        "type": "string",
-                        "example": "a69de3743ae24ac89dc3dc2e54c91b3b"
+                    "selected_meal_id": {
+                        "type": "int",
+                        "example": "1"
                     },
 
                 }
@@ -715,7 +717,7 @@ GET_ORDERS_DOCS = {
             "description": "Authorization token",
             "schema": {
                 "type": "string",
-                "format": "uuid",
+                "format": "bytes",
             },
             "required": True,
         }
@@ -740,7 +742,7 @@ GET_ORDERS_DOCS = {
                             "properties": {
                                 "id": {
                                     "type": "string",
-                                    "example": "a69de3743ae24ac89dc3dc2e54c91b3b"
+                                    "example": "1"
                                 },
                                 "title": {
                                     "type": "string",
@@ -771,7 +773,7 @@ GET_ORDER_DOCS = {
             "description": "Authorization token",
             "schema": {
                 "type": "string",
-                "format": "uuid",
+                "format": "bytes",
             },
             "required": True,
         },
@@ -802,8 +804,8 @@ GET_ORDER_DOCS = {
                         "items": {
                             "properties": {
                                 "id": {
-                                    "type": "string",
-                                    "example": "a69de3743ae24ac89dc3dc2e54c91b3b"
+                                    "type": "int",
+                                    "example": "1"
                                 },
                                 "title": {
                                     "type": "string",

@@ -1,5 +1,4 @@
-"""Testing the Menu Class
-"""
+"""Testing the Menu Class"""
 import datetime
 import uuid
 from flask import json
@@ -17,6 +16,7 @@ login_admin = {
     'email': 'osoticharles@gmail.com',
     'password': 'kulundeng'
 }
+
 
 class MenuTests(MainTestCase):
     """Main Test
@@ -36,10 +36,10 @@ class MenuTests(MainTestCase):
                 'title': 'Beef with chapati',
                 'price': '600.00'
             }), headers=dict(
-                    Authorization='Bearer ' + json.loads(
-                        response.data.decode()
-                    )['auth_token']
-                ))
+                Authorization='Bearer ' + json.loads(
+                    response.data.decode()
+                )['auth_token']
+            ))
             self.assertEqual(response.status_code, 201)
             self.assertIn(b'Meal has been successfully created', response.data)
             response = self.client.post(
@@ -51,15 +51,14 @@ class MenuTests(MainTestCase):
             response = self.client.post('api/v2/menu', data=json.dumps({
                 'selected_ids': ["1"]
             }), headers=dict(
-                    Authorization='Bearer ' + json.loads(
-                        response.data.decode()
-                    )['auth_token']
-                ))
+                Authorization='Bearer ' + json.loads(
+                    response.data.decode()
+                )['auth_token']
+            ))
             self.assertEqual(response.status_code, 201)
             self.assertIn(
                 b'Menu has been successfully created', response.data)
 
-    
     def test_get_menu(self):
         """Test get today's menu 
         """
@@ -74,10 +73,10 @@ class MenuTests(MainTestCase):
                 'title': 'Beef with chapati',
                 'price': '600.00'
             }), headers=dict(
-                    Authorization='Bearer ' + json.loads(
-                        response.data.decode()
-                    )['auth_token']
-                ))
+                Authorization='Bearer ' + json.loads(
+                    response.data.decode()
+                )['auth_token']
+            ))
             self.assertEqual(response.status_code, 201)
             self.assertIn(b'Meal has been successfully created', response.data)
             response = self.client.post(
@@ -89,10 +88,10 @@ class MenuTests(MainTestCase):
             response = self.client.post('api/v2/menu', data=json.dumps({
                 'selected_ids': ["1"]
             }), headers=dict(
-                    Authorization='Bearer ' + json.loads(
-                        response.data.decode()
-                    )['auth_token']
-                ))
+                Authorization='Bearer ' + json.loads(
+                    response.data.decode()
+                )['auth_token']
+            ))
             self.assertEqual(response.status_code, 201)
             self.assertIn(
                 b'Menu has been successfully created', response.data)
@@ -103,12 +102,11 @@ class MenuTests(MainTestCase):
             )
             data = json.loads(response.data.decode())
             response = self.client.get('api/v2/menu', headers=dict(
-                    Authorization='Bearer ' + json.loads(
-                        response.data.decode()
-                    )['auth_token']
-                ))
+                Authorization='Bearer ' + json.loads(
+                    response.data.decode()
+                )['auth_token']
+            ))
             self.assertEqual(response.status_code, 200)
-
 
     def test_set_up_menu_with_invalid_meal_id(self):
         """Test add meal to today's menu with invalid meal id 
@@ -124,10 +122,10 @@ class MenuTests(MainTestCase):
                 'title': 'Beef with chapati',
                 'price': '600.00'
             }), headers=dict(
-                    Authorization='Bearer ' + json.loads(
-                        response.data.decode()
-                    )['auth_token']
-                ))
+                Authorization='Bearer ' + json.loads(
+                    response.data.decode()
+                )['auth_token']
+            ))
             self.assertEqual(response.status_code, 201)
             response = self.client.post(
                 'api/v2/auth/login',
@@ -138,12 +136,11 @@ class MenuTests(MainTestCase):
             response = self.client.post('api/v2/menu', data=json.dumps({
                 'selected_ids': ["a"]
             }), headers=dict(
-                    Authorization='Bearer ' + json.loads(
-                        response.data.decode()
-                    )['auth_token']
-                ))
+                Authorization='Bearer ' + json.loads(
+                    response.data.decode()
+                )['auth_token']
+            ))
             self.assertEqual(response.status_code, 400)
-
 
     def test_set_up_menu_with_non_existing_meal_id(self):
         """Test add meal to today's menu with a meal that is not in the meal options 
@@ -159,10 +156,10 @@ class MenuTests(MainTestCase):
                 'title': 'Beef with chapati',
                 'price': '600.00'
             }), headers=dict(
-                    Authorization='Bearer ' + json.loads(
-                        response.data.decode()
-                    )['auth_token']
-                ))
+                Authorization='Bearer ' + json.loads(
+                    response.data.decode()
+                )['auth_token']
+            ))
             self.assertEqual(response.status_code, 201)
             self.assertIn(b'Meal has been successfully created', response.data)
             response = self.client.post(
@@ -174,9 +171,9 @@ class MenuTests(MainTestCase):
             response = self.client.post('api/v2/menu', data=json.dumps({
                 'selected_ids': ['5']
             }), headers=dict(
-                    Authorization='Bearer ' + json.loads(
-                        response.data.decode()
-                    )['auth_token']
-                ))
+                Authorization='Bearer ' + json.loads(
+                    response.data.decode()
+                )['auth_token']
+            ))
             self.assertEqual(response.status_code, 400)
             self.assertIn(b'Meal selected not found', response.data)

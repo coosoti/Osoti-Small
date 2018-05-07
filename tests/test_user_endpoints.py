@@ -6,29 +6,28 @@ from tests.main import MainTestCase
 
 
 class TestUserEndpoint(MainTestCase):
-    
+
     def test_registration(self):
-        """ Test for user signup 
-        """
+        """ Test for user signup"""
         with self.client:
             response = self.client.post('api/v2/auth/register',
-                data=json.dumps(dict(
-                    username='kulundeng',
-                    email='vicharles@gmail.com',
-                    designation='caterer',
-                    password='password1',
-                    confirm_password='password1'
-                )),
-                content_type='application/json'
-            )
+                                        data=json.dumps(dict(
+                                            username='kulundeng',
+                                            email='vicharles@gmail.com',
+                                            designation='caterer',
+                                            password='password1',
+                                            confirm_password='password1'
+                                        )),
+                                        content_type='application/json'
+                                        )
             data = json.loads(response.data.decode())
-            self.assertTrue(data['message'] == 'You are successfully registered.')
+            self.assertTrue(data['message'] ==
+                            'You are successfully registered.')
             self.assertEqual(response.status_code, 201)
 
     def test_registered_user_login(self):
         """ Test for login of registered-user login """
         with self.client:
-            # user registration
             response = self.client.post(
                 'api/v2/auth/register',
                 data=json.dumps(dict(
@@ -54,8 +53,9 @@ class TestUserEndpoint(MainTestCase):
                 content_type='application/json'
             )
             data = json.loads(response.data.decode())
-            self.assertTrue(data['message'] == 'You have successfully logged in')
-            self.assertEqual(response.status_code, 200)    
+            self.assertTrue(data['message'] ==
+                            'You have successfully logged in')
+            self.assertEqual(response.status_code, 200)
 
     def test_non_registered_user_login(self):
         """ Test for login of non-registered user """
@@ -70,12 +70,11 @@ class TestUserEndpoint(MainTestCase):
             )
             data = json.loads(response.data.decode())
             self.assertTrue(data['message'] == 'User does not exist.')
-            self.assertEqual(response.status_code, 404)        
+            self.assertEqual(response.status_code, 404)
 
     def test_valid_logout(self):
         """ Test for logout before token expires """
         with self.client:
-            # user registration
             response = self.client.post(
                 'api/v2/auth/register',
                 data=json.dumps(dict(
@@ -91,7 +90,6 @@ class TestUserEndpoint(MainTestCase):
             self.assertTrue(
                 data['message'] == 'You are successfully registered.')
             self.assertEqual(response.status_code, 201)
-            # user login
             response = self.client.post(
                 'api/v2/auth/login',
                 data=json.dumps(dict(
@@ -100,10 +98,10 @@ class TestUserEndpoint(MainTestCase):
                 )),
                 content_type='application/json'
             )
-            data= json.loads(response.data.decode())
-            self.assertTrue(data['message'] == 'You have successfully logged in')
+            data = json.loads(response.data.decode())
+            self.assertTrue(data['message'] ==
+                            'You have successfully logged in')
             self.assertEqual(response.status_code, 200)
-            # valid token logout
             response = self.client.post(
                 'api/v2/auth/logout',
                 headers=dict(
@@ -115,9 +113,6 @@ class TestUserEndpoint(MainTestCase):
             data = json.loads(response.data.decode())
             self.assertEqual(response.status_code, 200)
 
+
 if __name__ == '__main__':
     unittest.main()
-
-
-
-

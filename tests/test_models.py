@@ -31,7 +31,8 @@ class TestUser(MainTestCase):
         db.session.commit()
         auth_token = sample_user.encode_token(sample_user.id)
         self.assertTrue(isinstance(auth_token, bytes))
-        self.assertTrue(User.decode_token(auth_token) == 1)    
+        self.assertTrue(User.decode_token(auth_token) == 1)
+
 
 if __name__ == '__main__':
     unittest.main()
